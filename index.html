@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperStar TREASURE - Rhythm Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <video id="bg-video" autoplay muted loop playsinline>
+            <source src="c:/Users/User/Downloads/videoplayback.mp4" type="video/mp4">
+        </video>
+        <div id="bg-overlay"></div>
+
+        <canvas id="game-canvas"></canvas>
+
+        <div id="ui-layer">
+            <div id="score-display">
+                <div class="score-label">SCORE</div>
+                <div class="score-value" id="score-value">0</div>
+            </div>
+
+            <div id="combo-display" class="hidden">
+                <div class="combo-value" id="combo-value">0</div>
+                <div class="combo-label">COMBO</div>
+            </div>
+
+            <div id="judge-display" class="hidden">
+                <div class="judge-text" id="judge-text">PERFECT</div>
+            </div>
+
+            <div id="start-screen">
+                <h1 class="game-title">SuperStar</h1>
+                <h2 class="game-subtitle">TREASURE</h2>
+
+                <div id="song-select-wrapper">
+                    <div class="song-select-header">
+                        <div class="select-title">SELECT A SONG</div>
+                        <div class="select-subtitle">选择你想演奏的歌曲</div>
+                    </div>
+                    <div id="song-list" class="song-list"></div>
+                    <div id="song-detail" class="song-detail"></div>
+                </div>
+
+                <button id="start-btn" class="start-btn" disabled>
+                    <span class="btn-lock">🔒</span>
+                    <span class="btn-text">请先选择歌曲</span>
+                </button>
+
+                <div class="key-hints">
+                    <span class="key-hint">D</span>
+                    <span class="key-hint">F</span>
+                    <span class="key-hint">J</span>
+                    <span class="key-hint">K</span>
+                </div>
+                <div class="touch-hint" style="display:none;">手机用户：点击屏幕下方 4 个轨道即可演奏</div>
+            </div>
+
+            <div id="end-screen" class="hidden">
+                <div class="end-card">
+                    <div class="result-label">RESULT</div>
+                    <div class="grade-display" id="grade-display">S</div>
+                    <div class="final-score">
+                        <div class="final-score-label">TOTAL SCORE</div>
+                        <div class="final-score-value" id="final-score-value">0</div>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item stat-perfect">
+                            <div class="stat-count" id="stat-perfect">0</div>
+                            <div class="stat-label">PERFECT</div>
+                        </div>
+                        <div class="stat-item stat-great">
+                            <div class="stat-count" id="stat-great">0</div>
+                            <div class="stat-label">GREAT</div>
+                        </div>
+                        <div class="stat-item stat-good">
+                            <div class="stat-count" id="stat-good">0</div>
+                            <div class="stat-label">GOOD</div>
+                        </div>
+                        <div class="stat-item stat-miss">
+                            <div class="stat-count" id="stat-miss">0</div>
+                            <div class="stat-label">MISS</div>
+                        </div>
+                    </div>
+                    <div class="bonus-row">
+                        <div class="bonus-item">
+                            <span class="bonus-icon">🔥</span>
+                            <div class="bonus-info">
+                                <div class="bonus-label">MAX COMBO</div>
+                                <div class="bonus-value" id="stat-maxcombo">0</div>
+                            </div>
+                        </div>
+                        <div class="bonus-item">
+                            <span class="bonus-icon">⭐</span>
+                            <div class="bonus-info">
+                                <div class="bonus-label">ACCURACY</div>
+                                <div class="bonus-value" id="stat-accuracy">0%</div>
+                            </div>
+                        </div>
+                        <div class="bonus-item">
+                            <span class="bonus-icon">🎁</span>
+                            <div class="bonus-info">
+                                <div class="bonus-label">BONUS</div>
+                                <div class="bonus-value" id="stat-bonus">+0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="retry-btn" class="retry-btn">
+                        <span class="retry-icon">▶</span>
+                        PLAY AGAIN
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <audio id="bg-music" preload="auto">
+            <source src="c:\Users\User\Downloads\TREASURE - ‘사랑해 (I LOVE YOU) M_V.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+
+</html>
