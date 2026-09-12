@@ -1,117 +1,47 @@
+// game.js
 (function () {
     'use strict';
 
     const SONG_LIST = [
-        {
-            id: 'demo1',
-            name: 'BONA BONA',
-            artist: 'TREASURE',
-            cover: '💎',
-            coverBg: 'linear-gradient(135deg, #00aaff, #0066ff)',
-            video: 'https://www.w3schools.com/html/mov_bbb.mp4',
-            audio: 'https://www.w3schools.com/html/horse.mp3',
-            bpm: 90,
-            duration: '1:00',
-            difficulty: 'normal',
-            noteSpeed: 320,
-        },
-        {
-            id: 'demo2',
-            name: 'HELLO',
-            artist: 'TREASURE',
-            cover: '🌟',
-            coverBg: 'linear-gradient(135deg, #ffaa00, #ff6600)',
-            video: 'treasure_hello_mv.mp4',
-            audio: 'treasure_hello_song.mp3',
-            bpm: 105,
-            duration: '3:20',
-            difficulty: 'easy',
-            noteSpeed: 300,
-        },
-        {
-            id: 'demo3',
-            name: 'JIKJIN',
-            artist: 'TREASURE',
-            cover: '⚡',
-            coverBg: 'linear-gradient(135deg, #ff4466, #cc0033)',
-            video: 'treasure_jikjin_mv.mp4',
-            audio: 'treasure_jikjin_song.mp3',
-            bpm: 120,
-            duration: '3:05',
-            difficulty: 'hard',
-            noteSpeed: 380,
-        },
-        {
-            id: 'demo4',
-            name: 'MY TREASURE',
-            artist: 'TREASURE',
-            cover: '🌈',
-            coverBg: 'linear-gradient(135deg, #aa66ff, #6600cc)',
-            video: 'treasure_mytreasure_mv.mp4',
-            audio: 'treasure_mytreasure_song.mp3',
-            bpm: 110,
-            duration: '3:30',
-            difficulty: 'normal',
-            noteSpeed: 340,
-        },
-        {
-            id: 'demo5',
-            name: 'DARARI',
-            artist: 'TREASURE',
-            cover: '💜',
-            coverBg: 'linear-gradient(135deg, #66aaff, #3344cc)',
-            video: 'treasure_darari_mv.mp4',
-            audio: 'treasure_darari_song.mp3',
-            bpm: 85,
-            duration: '3:40',
-            difficulty: 'easy',
-            noteSpeed: 290,
-        },
-        {
-            id: 'demo6',
-            name: 'LOVE SCENARIO',
-            artist: 'TREASURE (Cover)',
-            cover: '🎭',
-            coverBg: 'linear-gradient(135deg, #44ddaa, #11aa66)',
-            video: 'treasure_love_scenario_mv.mp4',
-            audio: 'treasure_love_scenario_song.mp3',
-            bpm: 128,
-            duration: '3:30',
-            difficulty: 'expert',
-            noteSpeed: 420,
-        },
+        { id: 'iloveyou', name: 'I LOVE YOU', artist: 'TREASURE', cover: '💎', coverBg: 'linear-gradient(135deg, #00aaff, #0066ff)', coverImg: './covers/iloveyou_small.jpg', detailImg: './covers/iloveyou_big.jpg', video: './songs/iloveyou.mp4', audio: './songs/iloveyou.mp3' },
+        { id: 'bona_bona', name: 'BONA BONA', artist: 'TREASURE', cover: '🔥', coverBg: 'linear-gradient(135deg, #ff4466, #cc0033)', coverImg: './covers/bona_bona_small.jpg', detailImg: './covers/bona_bona_big.jpg', video: './songs/bona_bona.mp4', audio: './songs/bona_bona.mp3' },
+        { id: 'boy', name: 'BOY', artist: 'TREASURE', cover: '💙', coverBg: 'linear-gradient(135deg, #0055ff, #0022aa)', coverImg: './covers/boy_small.jpg', detailImg: './covers/boy_big.jpg', video: './songs/boy.mp4', audio: './songs/boy.mp3' },
+        { id: 'darari', name: 'DARARI', artist: 'TREASURE', cover: '🎶', coverBg: 'linear-gradient(135deg, #ffaa00, #ff4400)', coverImg: './covers/darari_small.jpg', detailImg: './covers/darari_big.jpg', video: './songs/darari.mp4', audio: './songs/darari.mp3' },
+        { id: 'jikjin', name: 'JIKJIN', artist: 'TREASURE', cover: '⚡', coverBg: 'linear-gradient(135deg, #00e5ff, #0088cc)', coverImg: './covers/jikjin_small.jpg', detailImg: './covers/jikjin_big.jpg', video: './songs/jikjin.mp4', audio: './songs/jikjin.mp3' },
+        { id: 'hello', name: 'HELLO', artist: 'TREASURE', cover: '✨', coverBg: 'linear-gradient(135deg, #7700ff, #aa00ff)', coverImg: './covers/hello_small.jpg', detailImg: './covers/hello_big.jpg', video: './songs/hello.mp4', audio: './songs/hello.mp3' },
+        { id: 'mmm', name: 'MMM', artist: 'TREASURE', cover: '🖤', coverBg: 'linear-gradient(135deg, #333333, #000000)', coverImg: './covers/mmm_small.jpg', detailImg: './covers/mmm_big.jpg', video: './songs/mmm.mp4', audio: './songs/mmm.mp3' },
+        { id: 'my_treasure', name: 'MY TREASURE', artist: 'TREASURE', cover: '☀️', coverBg: 'linear-gradient(135deg, #ffea00, #ff9900)', coverImg: './covers/my_treasure_small.jpg', detailImg: './covers/my_treasure_big.jpg', video: './songs/my_treasure.mp4', audio: './songs/my_treasure.mp3' },
+        { id: 'king_kong', name: 'KING KONG', artist: 'TREASURE', cover: '🦍', coverBg: 'linear-gradient(135deg, #ff2200, #880000)', coverImg: './covers/king_kong_small.jpg', detailImg: './covers/king_kong_big.jpg', video: './songs/king_kong.mp4', audio: './songs/king_kong.mp3' },
+        { id: 'b_o_m_b', name: 'B.O.M.B', artist: 'TREASURE', cover: '💣', coverBg: 'linear-gradient(135deg, #ff00aa, #aa0055)', coverImg: './covers/bomb_small.jpg', detailImg: './covers/bomb_big.jpg', video: './songs/bomb.mp4', audio: './songs/bomb.mp3' },
+        { id: 'oranje', name: 'ORANGE', artist: 'TREASURE', cover: '🍊', coverBg: 'linear-gradient(135deg, #ff7700, #cc4400)', coverImg: './covers/orange_small.jpg', detailImg: './covers/orange_big.jpg', video: './songs/orange.mp4', audio: './songs/orange.mp3' },
+        { id: 'going_crazy', name: 'GOING CRAZY', artist: 'TREASURE', cover: '🌀', coverBg: 'linear-gradient(135deg, #00ffcc, #009977)', coverImg: './covers/going_crazy_small.jpg', detailImg: './covers/going_crazy_big.jpg', video: './songs/going_crazy.mp4', audio: './songs/going_crazy.mp3' },
+        { id: 'wonderland', name: 'WONDERLAND', artist: 'TREASURE', cover: '🌌', coverBg: 'linear-gradient(135deg, #4400ff, #220088)', coverImg: './covers/wonderland_small.jpg', detailImg: './covers/wonderland_big.jpg', video: './songs/wonderland.mp4', audio: './songs/wonderland.mp3' },
+        { id: 'run', name: 'RUN', artist: 'TREASURE', cover: '🏃', coverBg: 'linear-gradient(135deg, #00ff66, #00aa33)', coverImg: './covers/run_small.jpg', detailImg: './covers/run_big.jpg', video: './songs/run.mp4', audio: './songs/run.mp3' },
+        { id: 'g_o_a_t', name: 'G.O.A.T', artist: 'TREASURE', cover: '🐐', coverBg: 'linear-gradient(135deg, #bbbbbb, #555555)', coverImg: './covers/goat_small.jpg', detailImg: './covers/goat_big.jpg', video: './songs/goat.mp4', audio: './songs/goat.mp3' },
+        { id: 'volcano', name: 'VOLKANO', artist: 'TREASURE', cover: '🌋', coverBg: 'linear-gradient(135deg, #ff3300, #991100)', coverImg: './covers/volkano_small.jpg', detailImg: './covers/volkano_big.jpg', video: './songs/volkano.mp4', audio: './songs/volkano.mp3' },
+        { id: 'thank_you', name: 'THANK YOU', artist: 'TREASURE', cover: '💌', coverBg: 'linear-gradient(135deg, #ff6699, #ff3366)', coverImg: './covers/thank_you_small.jpg', detailImg: './covers/thank_you_big.jpg', video: './songs/thank_you.mp4', audio: './songs/thank_you.mp3' },
+        { id: 'hold_it_in', name: 'HOLD IT IN', artist: 'TREASURE', cover: '🛡️', coverBg: 'linear-gradient(135deg, #0099ff, #0044aa)', coverImg: './covers/hold_it_in_small.jpg', detailImg: './covers/hold_it_in_big.jpg', video: './songs/hold_it_in.mp4', audio: './songs/hold_it_in.mp3' },
+        { id: 'move', name: 'MOVE (T5)', artist: 'TREASURE', cover: '💃', coverBg: 'linear-gradient(135deg, #9900ff, #5500aa)', coverImg: './covers/move_small.jpg', detailImg: './covers/move_big.jpg', video: './songs/move.mp4', audio: './songs/move.mp3' },
+        { id: 'here_i_stand', name: 'HERE I STAND', artist: 'TREASURE', cover: '🎤', coverBg: 'linear-gradient(135deg, #00e5ff, #0055ff)', coverImg: './covers/here_i_stand_small.jpg', detailImg: './covers/here_i_stand_big.jpg', video: './songs/here_i_stand.mp4', audio: './songs/here_i_stand.mp3' }
     ];
 
     const CONFIG_BASE = {
         TRACK_COUNT: 4,
-        NOTE_SPEED: 320,
+        NOTE_SPEED: 340,
         JUDGE_LINE_Y_RATIO: 0.85,
         TRACK_WIDTH_RATIO: 0.5,
         PERFECT_WINDOW: 60,
         GREAT_WINDOW: 120,
         GOOD_WINDOW: 180,
-        MISS_WINDOW: 220,
-        PERFECT_SCORE: 300,
-        GREAT_SCORE: 200,
-        GOOD_SCORE: 100,
-        HOLD_TICK_SCORE: 10,
-        COMBO_BONUS_THRESHOLD: 10,
+        MISS_WINDOW: 220
     };
 
     const KEY_MAP = ['d', 'f', 'j', 'k'];
     const TRACK_COLORS = [
-        ['#ff4d6d', '#ff0055'],
-        ['#4dffff', '#00ccff'],
-        ['#ffaa4d', '#ff6600'],
-        ['#8a4dff', '#6600ff'],
-    ];
-
-    const GRADE_THRESHOLDS = [
-        { grade: 'S', minAcc: 95 },
-        { grade: 'A', minAcc: 85 },
-        { grade: 'B', minAcc: 70 },
-        { grade: 'C', minAcc: 50 },
-        { grade: 'D', minAcc: 0 },
+        { main: '#ff0055', glow: '#ff4d6d' },
+        { main: '#00ccff', glow: '#4dffff' },
+        { main: '#ff6600', glow: '#ffaa4d' },
+        { main: '#6600ff', glow: '#b388ff' }
     ];
 
     class Game {
@@ -123,9 +53,7 @@
 
             this.CONFIG = { ...CONFIG_BASE };
             this.currentSong = null;
-
-            this.resizeCanvas();
-            window.addEventListener('resize', () => this.resizeCanvas());
+            this.selectedMode = 'normal';
 
             this.score = 0;
             this.combo = 0;
@@ -134,26 +62,17 @@
             this.startTime = 0;
             this.lastTimestamp = 0;
             this.isPlaying = false;
+            this.isPaused = false;
             this.isEnded = false;
 
-            this.stats = {
-                perfect: 0,
-                great: 0,
-                good: 0,
-                miss: 0,
-            };
-
+            this.stats = { perfect: 0, great: 0, good: 0, miss: 0 };
             this.notes = [];
-            this.particles = [];
-            this.holdEffects = [];
             this.trackPressState = [false, false, false, false];
-            this.trackFlashState = [0, 0, 0, 0];
+            this.hitEffects = [];
 
+            // UI 元素绑定
             this.scoreEl = document.getElementById('score-value');
-            this.comboEl = document.getElementById('combo-display');
-            this.comboValueEl = document.getElementById('combo-value');
-            this.judgeEl = document.getElementById('judge-display');
-            this.judgeTextEl = document.getElementById('judge-text');
+            this.gameUiEl = document.getElementById('game-ui');
             this.startScreen = document.getElementById('start-screen');
             this.startBtn = document.getElementById('start-btn');
             this.endScreen = document.getElementById('end-screen');
@@ -161,132 +80,110 @@
             this.songListEl = document.getElementById('song-list');
             this.songDetailEl = document.getElementById('song-detail');
 
-            this.activeTouches = new Map();
+            this.pauseBtn = document.getElementById('pause-btn');
+            this.pauseOverlay = document.getElementById('pause-overlay');
+            this.resumeBtn = document.getElementById('resume-btn');
+            this.restartInGameBtn = document.getElementById('restart-in-game-btn');
+            this.homeBtn = document.getElementById('home-btn');
+
+            this.resizeCanvas();
+            window.addEventListener('resize', () => this.resizeCanvas());
 
             this.setupEventListeners();
             this.renderSongList();
-            this.generateDemoNotes();
+            this.renderSongDetail();
             this.loop = this.loop.bind(this);
         }
 
         renderSongList() {
+            if (!this.songListEl) return;
             this.songListEl.innerHTML = '';
             SONG_LIST.forEach(song => {
                 const card = document.createElement('div');
                 card.className = 'song-card';
                 card.dataset.songId = song.id;
 
-                const diffClass = 'diff-' + song.difficulty;
-                const diffText = song.difficulty.toUpperCase();
-
                 card.innerHTML = `
-                    <div class="song-cover" style="background: ${song.coverBg}">
-                        ${song.cover}
+                    <div class="song-cover" style="background: ${song.coverBg}; overflow: hidden; padding: 0;">
+                        <img src="${song.coverImg}" alt="${song.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center;">${song.cover}</div>
                     </div>
                     <div class="song-info">
                         <div class="song-name">${song.name}</div>
                         <div class="song-artist">${song.artist}</div>
-                        <div class="song-meta">
-                            <span class="difficulty-badge ${diffClass}">${diffText}</span>
-                            <span class="song-duration">${song.duration}</span>
-                        </div>
                     </div>
                 `;
 
                 card.addEventListener('click', () => this.selectSong(song.id));
-                card.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    this.selectSong(song.id);
-                }, { passive: false });
-
                 this.songListEl.appendChild(card);
             });
-
-            this.songDetailEl.innerHTML = `
-                <div class="detail-empty">
-                    <div class="detail-empty-icon">🎵</div>
-                    <div class="detail-empty-text">← 请从左侧选择一首歌曲</div>
-                </div>
-            `;
         }
 
+        // ====== 修改后的 selectSong ======
         selectSong(songId) {
             const song = SONG_LIST.find(s => s.id === songId);
             if (!song) return;
             this.currentSong = song;
 
             document.querySelectorAll('.song-card').forEach(card => {
-                if (card.dataset.songId === songId) {
-                    card.classList.add('active');
-                } else {
-                    card.classList.remove('active');
-                }
+                card.classList.toggle('active', card.dataset.songId === songId);
             });
 
-            const diffClass = 'detail-diff diff-' + song.difficulty;
-            const diffText = song.difficulty.toUpperCase();
-            const noteCount = this.getNoteCountForSong(song);
+            this.renderSongDetail();
 
-            this.songDetailEl.classList.add('has-song');
-            this.songDetailEl.innerHTML = `
-                <div class="detail-cover" style="background: ${song.coverBg}">
-                    ${song.cover}
-                </div>
-                <div class="detail-name">${song.name}</div>
-                <div class="detail-artist">${song.artist}</div>
-                <span class="${diffClass}">${diffText}</span>
-                <div class="detail-stats">
-                    <div class="detail-stat">
-                        <div class="detail-stat-label">BPM</div>
-                        <div class="detail-stat-value">${song.bpm}</div>
-                    </div>
-                    <div class="detail-stat">
-                        <div class="detail-stat-label">时长</div>
-                        <div class="detail-stat-value">${song.duration}</div>
-                    </div>
-                    <div class="detail-stat">
-                        <div class="detail-stat-label">音符</div>
-                        <div class="detail-stat-value">${noteCount}+</div>
-                    </div>
-                </div>
-            `;
-
-            this.startBtn.disabled = false;
-            this.startBtn.innerHTML = `
-                <span style="font-size:24px;">▶</span>
-                <span class="btn-text">START GAME</span>
-            `;
+            if (this.startBtn) {
+                this.startBtn.disabled = false;
+                this.startBtn.innerHTML = '<span class="btn-text">▶ START GAME</span>';
+            }
         }
 
-        getNoteCountForSong(song) {
-            const bpm = song.bpm;
-            const beatTime = 60000 / bpm;
-            const patterns = this.getPatternsForBpm(bpm);
-            return patterns.length * 4;
+        // ====== 修改后的 renderSongDetail（对应你说的 render song）======
+        renderSongDetail() {
+            if (!this.songDetailEl) return;
+
+            if (!this.currentSong) {
+                this.songDetailEl.classList.remove('has-song');
+                this.songDetailEl.innerHTML = `
+                    <div class="no-song-placeholder" style="color: rgba(255,255,255,0.5); padding: 30px 0;">
+                        请先选择歌曲
+                    </div>
+                `;
+                return;
+            }
+
+            const song = this.currentSong;
+            this.songDetailEl.classList.add('has-song');
+            this.songDetailEl.innerHTML = `
+                <div class="detail-cover-img" style="background: ${song.coverBg}; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                  <img src="${song.detailImg}" alt="${song.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center;">${song.cover}</div>
+                </div>
+                <h2>${song.name}</h2>
+                <p>${song.artist}</p>
+                <div class="mode-selector" style="display: flex; gap: 8px; width: 100%; margin-top: 15px;">
+                    <button class="mode-btn ${this.selectedMode === 'easy' ? 'active' : ''}" data-mode="easy">EASY</button>
+                    <button class="mode-btn ${this.selectedMode === 'normal' ? 'active' : ''}" data-mode="normal">NORMAL</button>
+                    <button class="mode-btn ${this.selectedMode === 'hard' ? 'active' : ''}" data-mode="hard">HARD</button>
+                </div>
+            `;
+
+            this.songDetailEl.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    this.selectedMode = e.target.dataset.mode;
+                    this.renderSongDetail();
+                });
+            });
         }
 
         loadSongMedia(song) {
-            const videoSources = this.video.querySelectorAll('source');
-            if (videoSources.length > 0) {
-                videoSources[0].src = song.video;
-            } else {
-                const source = document.createElement('source');
-                source.src = song.video;
-                source.type = 'video/mp4';
-                this.video.appendChild(source);
+            if (song.video) {
+                this.video.src = song.video;
+                this.video.load();
             }
-            this.video.load();
-
-            const audioSources = this.audio.querySelectorAll('source');
-            if (audioSources.length > 0) {
-                audioSources[0].src = song.audio;
-            } else {
-                const source = document.createElement('source');
-                source.src = song.audio;
-                source.type = 'audio/mpeg';
-                this.audio.appendChild(source);
+            if (song.audio) {
+                this.audio.src = song.audio;
+                this.audio.load();
             }
-            this.audio.load();
         }
 
         resizeCanvas() {
@@ -294,122 +191,47 @@
             this.canvas.height = window.innerHeight;
             this.width = this.canvas.width;
             this.height = this.canvas.height;
-
-            if (this.width < 768) {
-                this.trackAreaWidth = this.width * 0.95;
-            } else {
-                this.trackAreaWidth = this.width * this.CONFIG.TRACK_WIDTH_RATIO;
-            }
+            this.trackAreaWidth = this.width < 768 ? this.width * 0.95 : this.width * this.CONFIG.TRACK_WIDTH_RATIO;
             this.trackAreaLeft = (this.width - this.trackAreaWidth) / 2;
-            this.trackWidth = this.trackAreaWidth / this.this.CONFIG.TRACK_COUNT;
+            this.trackWidth = this.trackAreaWidth / this.CONFIG.TRACK_COUNT;
             this.judgeLineY = this.height * this.CONFIG.JUDGE_LINE_Y_RATIO;
-            this.noteHeight = Math.min(28, this.trackWidth * 0.25);
-        }
-
-        getTrackFromX(x) {
-            if (x < this.trackAreaLeft || x > this.trackAreaLeft + this.trackAreaWidth) {
-                return -1;
-            }
-            const localX = x - this.trackAreaLeft;
-            const idx = Math.floor(localX / this.trackWidth);
-            return Math.max(0, Math.min(this.CONFIG.TRACK_COUNT - 1, idx));
-        }
-
-        pressTrack(trackIdx) {
-            if (trackIdx < 0 || trackIdx >= this.CONFIG.TRACK_COUNT) return;
-            if (this.trackPressState[trackIdx]) return;
-            this.trackPressState[trackIdx] = true;
-            this.trackFlashState[trackIdx] = 1;
-            this.handleTrackPress(trackIdx);
-        }
-
-        releaseTrack(trackIdx) {
-            if (trackIdx < 0 || trackIdx >= this.CONFIG.TRACK_COUNT) return;
-            this.trackPressState[trackIdx] = false;
-            this.handleTrackRelease(trackIdx);
         }
 
         setupEventListeners() {
             document.addEventListener('keydown', (e) => {
-                const key = e.key.toLowerCase();
-                const trackIdx = KEY_MAP.indexOf(key);
-                if (trackIdx !== -1) {
+                if (e.key === 'Escape' || e.key.toLowerCase() === 'p') {
+                    if (this.isPlaying) this.togglePause();
+                    return;
+                }
+                if (this.isPaused) return;
+
+                const trackIdx = KEY_MAP.indexOf(e.key.toLowerCase());
+                if (trackIdx !== -1 && !this.trackPressState[trackIdx]) {
                     this.pressTrack(trackIdx);
                 }
             });
 
             document.addEventListener('keyup', (e) => {
-                const key = e.key.toLowerCase();
-                const trackIdx = KEY_MAP.indexOf(key);
+                const trackIdx = KEY_MAP.indexOf(e.key.toLowerCase());
                 if (trackIdx !== -1) {
                     this.releaseTrack(trackIdx);
                 }
             });
 
-            this.canvas.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                const rect = this.canvas.getBoundingClientRect();
-                for (const touch of e.changedTouches) {
-                    const x = touch.clientX - rect.left;
-                    const y = touch.clientY - rect.top;
-                    const trackIdx = this.getTrackFromX(x);
-                    if (trackIdx !== -1) {
-                        this.activeTouches.set(touch.identifier, trackIdx);
-                        this.pressTrack(trackIdx);
-                    }
-                }
-            }, { passive: false });
-
-            this.canvas.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-                const rect = this.canvas.getBoundingClientRect();
-                for (const touch of e.changedTouches) {
-                    const prevTrack = this.activeTouches.get(touch.identifier);
-                    const x = touch.clientX - rect.left;
-                    const newTrack = this.getTrackFromX(x);
-                    if (prevTrack !== undefined && prevTrack !== newTrack) {
-                        this.releaseTrack(prevTrack);
-                        this.activeTouches.set(touch.identifier, newTrack);
-                        if (newTrack !== -1) {
-                            this.pressTrack(newTrack);
-                        }
-                    }
-                }
-            }, { passive: false });
-
-            this.canvas.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                for (const touch of e.changedTouches) {
-                    const trackIdx = this.activeTouches.get(touch.identifier);
-                    if (trackIdx !== undefined) {
-                        this.releaseTrack(trackIdx);
-                        this.activeTouches.delete(touch.identifier);
-                    }
-                }
-            }, { passive: false });
-
-            this.canvas.addEventListener('touchcancel', (e) => {
-                e.preventDefault();
-                for (const touch of e.changedTouches) {
-                    const trackIdx = this.activeTouches.get(touch.identifier);
-                    if (trackIdx !== undefined) {
-                        this.releaseTrack(trackIdx);
-                        this.activeTouches.delete(touch.identifier);
-                    }
-                }
-            }, { passive: false });
-
             this.startBtn.addEventListener('click', () => this.startGame());
-            this.startBtn.addEventListener('touchend', (e) => {
-                e.preventDefault();
+            this.retryBtn.addEventListener('click', () => this.startGame());
+            this.pauseBtn.addEventListener('click', () => this.togglePause());
+            this.resumeBtn.addEventListener('click', () => this.togglePause());
+            this.restartInGameBtn.addEventListener('click', () => {
+                this.togglePause();
                 this.startGame();
-            }, { passive: false });
+            });
+            this.homeBtn.addEventListener('click', () => this.goHome());
 
-            this.retryBtn.addEventListener('click', () => this.restartGame());
-            this.retryBtn.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                this.restartGame();
-            }, { passive: false });
+            const resultHomeBtn = document.getElementById('result-home-btn');
+            if (resultHomeBtn) {
+                resultHomeBtn.addEventListener('click', () => this.goHome());
+            }
 
             this.audio.addEventListener('ended', () => {
                 if (this.isPlaying && !this.isEnded) {
@@ -418,297 +240,120 @@
             });
         }
 
-        getPatternsForBpm(bpm) {
-            const beatTime = 60000 / bpm;
-            return [
-                { track: 0, time: beatTime * 2, type: 'tap' },
-                { track: 1, time: beatTime * 3, type: 'tap' },
-                { track: 2, time: beatTime * 4, type: 'tap' },
-                { track: 3, time: beatTime * 5, type: 'tap' },
-                { track: 0, time: beatTime * 6, type: 'tap' },
-                { track: 2, time: beatTime * 6, type: 'tap' },
-                { track: 1, time: beatTime * 7, type: 'tap' },
-                { track: 3, time: beatTime * 7, type: 'tap' },
-                { track: 0, time: beatTime * 8, type: 'hold', duration: beatTime * 2 },
-                { track: 3, time: beatTime * 9, type: 'hold', duration: beatTime * 1.5 },
-                { track: 1, time: beatTime * 10, type: 'tap' },
-                { track: 2, time: beatTime * 10, type: 'tap' },
-                { track: 0, time: beatTime * 11, type: 'tap' },
-                { track: 1, time: beatTime * 11.5, type: 'tap' },
-                { track: 2, time: beatTime * 12, type: 'tap' },
-                { track: 3, time: beatTime * 12.5, type: 'tap' },
-                { track: 1, time: beatTime * 13, type: 'hold', duration: beatTime * 2.5 },
-                { track: 2, time: beatTime * 13, type: 'hold', duration: beatTime * 2.5 },
-                { track: 0, time: beatTime * 14, type: 'tap' },
-                { track: 3, time: beatTime * 14, type: 'tap' },
-                { track: 0, time: beatTime * 15, type: 'tap' },
-                { track: 1, time: beatTime * 15, type: 'tap' },
-                { track: 2, time: beatTime * 15, type: 'tap' },
-                { track: 3, time: beatTime * 15, type: 'tap' },
-                { track: 0, time: beatTime * 16, type: 'tap' },
-                { track: 3, time: beatTime * 16.5, type: 'tap' },
-                { track: 1, time: beatTime * 17, type: 'tap' },
-                { track: 2, time: beatTime * 17.5, type: 'tap' },
-                { track: 0, time: beatTime * 18, type: 'hold', duration: beatTime * 3 },
-                { track: 1, time: beatTime * 19, type: 'tap' },
-                { track: 2, time: beatTime * 20, type: 'tap' },
-                { track: 3, time: beatTime * 18, type: 'hold', duration: beatTime * 3 },
-            ];
+        togglePause() {
+            if (!this.isPlaying) return;
+            this.isPaused = !this.isPaused;
+
+            if (this.isPaused) {
+                this.audio.pause();
+                this.video.pause();
+                this.pauseOverlay.classList.remove('hidden');
+            } else {
+                this.audio.play().catch(() => { });
+                this.video.play().catch(() => { });
+                this.pauseOverlay.classList.add('hidden');
+                this.lastTimestamp = performance.now();
+                requestAnimationFrame(this.loop);
+            }
         }
 
-        generateDemoNotes() {
-            const song = this.currentSong || SONG_LIST[0];
-            const bpm = song.bpm || 90;
-            const beatTime = 60000 / bpm;
-            const patterns = this.getPatternsForBpm(bpm);
+        goHome() {
+            this.isPlaying = false;
+            this.isPaused = false;
+            this.isEnded = false;
+            try { this.audio.pause(); } catch (e) { }
+            try { this.video.pause(); } catch (e) { }
 
-            this.CONFIG = { ...CONFIG_BASE };
-            this.this.CONFIG.NOTE_SPEED = song.noteSpeed || CONFIG_BASE.NOTE_SPEED;
+            this.pauseOverlay.classList.add('hidden');
+            this.endScreen.classList.add('hidden');
+            this.gameUiEl.classList.add('hidden');
+            this.startScreen.style.display = 'flex';
+        }
+
+        generateNotesByMode() {
+            const speedMap = { easy: 260, normal: 340, hard: 440 };
+            const intervalMap = { easy: 600, normal: 400, hard: 250 };
+
+            this.CONFIG.NOTE_SPEED = speedMap[this.selectedMode] || 340;
+            const interval = intervalMap[this.selectedMode] || 400;
+
+            const totalDuration = (this.audio && this.audio.duration && !isNaN(this.audio.duration))
+                ? this.audio.duration * 1000
+                : 120000;
 
             this.notes = [];
-            const loopCount = 4;
-            const loopDuration = beatTime * 20;
-            for (let i = 0; i < loopCount; i++) {
-                const offset = loopDuration * i;
-                patterns.forEach(p => {
-                    this.notes.push({
-                        track: p.track,
-                        time: p.time + offset,
-                        type: p.type,
-                        duration: p.duration || 0,
-                        hit: false,
-                        completed: false,
-                        holdStarted: false,
-                        lastTickTime: p.time + offset,
-                    });
-                });
-            }
+            let currentTime = 2000;
+            let noteCount = 0;
 
-            this.maxPossibleScore = 0;
-            this.notes.forEach(n => {
-                if (n.type === 'tap') {
-                    this.maxPossibleScore += this.this.CONFIG.PERFECT_SCORE;
-                } else if (n.type === 'hold') {
-                    this.maxPossibleScore += this.this.CONFIG.PERFECT_SCORE;
-                    const ticks = Math.floor(n.duration / 50);
-                    this.maxPossibleScore += ticks * this.this.CONFIG.HOLD_TICK_SCORE;
-                    this.maxPossibleScore += this.this.CONFIG.PERFECT_SCORE;
-                }
-            });
+            while (currentTime < totalDuration - 3000) {
+                const isHold = (noteCount % 7 === 0);
+                const duration = isHold ? 800 + Math.random() * 800 : 0;
+
+                this.notes.push({
+                    track: Math.floor(Math.random() * 4),
+                    time: currentTime,
+                    duration: duration,
+                    isHolding: false,
+                    completed: false,
+                    hit: false
+                });
+
+                currentTime += isHold ? interval + duration : interval;
+                noteCount++;
+            }
         }
 
         startGame() {
-            if (!this.currentSong) {
-                this.currentSong = SONG_LIST[0];
-            }
+            if (!this.currentSong) return;
 
             this.loadSongMedia(this.currentSong);
-
             this.startScreen.style.display = 'none';
             this.endScreen.classList.add('hidden');
+            this.pauseOverlay.classList.add('hidden');
+            this.gameUiEl.classList.remove('hidden');
+
             this.isPlaying = true;
+            this.isPaused = false;
             this.isEnded = false;
             this.score = 0;
             this.combo = 0;
             this.maxCombo = 0;
-            this.gameTime = 0;
-            this.particles = [];
-            this.holdEffects = [];
             this.stats = { perfect: 0, great: 0, good: 0, miss: 0 };
-            this.trackPressState = [false, false, false, false];
-            this.trackFlashState = [0, 0, 0, 0];
+            if (this.scoreEl) this.scoreEl.textContent = '0';
 
-            this.generateDemoNotes();
-
-            const mediaTimeoutMs = 1500;
             setTimeout(() => {
-                if (this.video.paused) {
-                    this.video.play().catch(() => {});
-                }
-                if (this.audio.paused) {
+                if (this.video.src) this.video.play().catch(() => { });
+                if (this.audio.src) {
                     this.audio.currentTime = 0;
-                    this.audio.play().catch(() => {
-                        setTimeout(() => {
-                            if (this.isPlaying && !this.isEnded) {
-                                const song = this.currentSong || SONG_LIST[0];
-                                const bpm = song.bpm || 90;
-                                const beatTime = 60000 / bpm;
-                                const totalTime = beatTime * 20 * 4 + 3000;
-                                setTimeout(() => this.endGame(), totalTime);
-                            }
-                        }, 1000);
-                    });
+                    this.audio.play().catch(() => { });
                 }
-            }, mediaTimeoutMs);
+                this.generateNotesByMode();
+            }, 300);
 
             this.startTime = performance.now();
             this.lastTimestamp = this.startTime;
-            this.updateScore();
             requestAnimationFrame(this.loop);
         }
 
-        restartGame() {
-            this.endScreen.classList.add('hidden');
-            this.startScreen.style.display = 'flex';
-            this.renderSongList();
-            this.currentSong = null;
+        pressTrack(trackIdx) {
+            if (!this.isPlaying || this.isPaused) return;
+            this.trackPressState[trackIdx] = true;
 
-            document.querySelectorAll('.song-card').forEach(c => c.classList.remove('active'));
-            this.songDetailEl.classList.remove('has-song');
-            this.songDetailEl.innerHTML = `
-                <div class="detail-empty">
-                    <div class="detail-empty-icon">🎵</div>
-                    <div class="detail-empty-text">← 请从左侧选择一首歌曲</div>
-                </div>
-            `;
-            this.startBtn.disabled = true;
-            this.startBtn.innerHTML = `
-                <span class="btn-lock">🔒</span>
-                <span class="btn-text">请先选择歌曲</span>
-            `;
-
-            try { this.audio.pause(); } catch (e) {}
-            try { this.video.pause(); } catch (e) {}
-        }
-
-        endGame() {
-            if (this.isEnded) return;
-            this.isEnded = true;
-            this.isPlaying = false;
-
-            try {
-                this.audio.pause();
-            } catch (e) {}
-
-            setTimeout(() => {
-                this.showEndScreen();
-            }, 800);
-        }
-
-        showEndScreen() {
-            const totalJudged = this.stats.perfect + this.stats.great + this.stats.good + this.stats.miss;
-            const accuracy = totalJudged > 0
-                ? ((this.stats.perfect * 100 + this.stats.great * 80 + this.stats.good * 50) / (totalJudged * 100)) * 100
-                : 0;
-
-            let grade = 'D';
-            for (const g of GRADE_THRESHOLDS) {
-                if (accuracy >= g.minAcc) {
-                    grade = g.grade;
-                    break;
-                }
-            }
-
-            let bonusScore = 0;
-            if (this.stats.miss === 0) bonusScore += 2000;
-            if (this.stats.good === 0) bonusScore += 1500;
-            if (grade === 'S') bonusScore += 5000;
-            else if (grade === 'A') bonusScore += 3000;
-            else if (grade === 'B') bonusScore += 1500;
-            bonusScore += this.maxCombo * 20;
-
-            this.score += bonusScore;
-
-            const gradeDisplay = document.getElementById('grade-display');
-            gradeDisplay.className = 'grade-display';
-            gradeDisplay.classList.add('grade-' + grade.toLowerCase());
-            gradeDisplay.textContent = grade;
-
-            document.getElementById('final-score-value').textContent = this.score.toLocaleString();
-            document.getElementById('stat-perfect').textContent = this.stats.perfect;
-            document.getElementById('stat-great').textContent = this.stats.great;
-            document.getElementById('stat-good').textContent = this.stats.good;
-            document.getElementById('stat-miss').textContent = this.stats.miss;
-            document.getElementById('stat-maxcombo').textContent = this.maxCombo;
-            document.getElementById('stat-accuracy').textContent = accuracy.toFixed(1) + '%';
-            document.getElementById('stat-bonus').textContent = '+' + bonusScore.toLocaleString();
-
-            this.endScreen.classList.remove('hidden');
-        }
-
-        loop(timestamp) {
-            if (!this.isPlaying) return;
-
-            const dt = timestamp - this.lastTimestamp;
-            this.lastTimestamp = timestamp;
-            this.gameTime = timestamp - this.startTime;
-
-            this.update(dt);
-            this.render();
-
-            const allNotesDone = this.notes.every(n => n.completed);
-            if (allNotesDone && this.gameTime > 5000 && !this.isEnded) {
-                const musicDuration = (this.audio.duration || 0) * 1000;
-                if (musicDuration > 0 && this.gameTime >= musicDuration - 500) {
-                    this.endGame();
-                } else if (musicDuration === 0 && this.gameTime > this.notes[this.notes.length - 1].time + 3000) {
-                    this.endGame();
-                }
-            }
-
-            requestAnimationFrame(this.loop);
-        }
-
-        update(dt) {
-            for (let i = 0; i < this.CONFIG.TRACK_COUNT; i++) {
-                if (this.trackFlashState[i] > 0) {
-                    this.trackFlashState[i] = Math.max(0, this.trackFlashState[i] - dt / 200);
-                }
-            }
-
-            this.updateNotes();
-            this.updateHoldEffects(dt);
-            this.updateParticles(dt);
-        }
-
-        updateNotes() {
-            for (const note of this.notes) {
-                if (note.completed) continue;
-
-                if (note.type === 'tap') {
-                    if (!note.hit && this.gameTime - note.time > this.CONFIG.MISS_WINDOW) {
-                        note.completed = true;
-                        this.handleJudge('miss', note.track);
-                    }
-                } else if (note.type === 'hold') {
-                    const endTime = note.time + note.duration;
-
-                    if (!note.hit && this.gameTime - note.time > this.CONFIG.MISS_WINDOW) {
-                        note.completed = true;
-                        this.handleJudge('miss', note.track);
-                        continue;
-                    }
-
-                    if (note.hit && this.trackPressState[note.track] && this.gameTime < endTime) {
-                        if (this.gameTime - note.lastTickTime >= 50) {
-                            note.lastTickTime = this.gameTime;
-                            this.score += this.CONFIG.HOLD_TICK_SCORE;
-                            this.updateScore();
-                            const noteY = this.judgeLineY;
-                            const noteX = this.trackAreaLeft + note.track * this.trackWidth + this.trackWidth / 2;
-                            this.spawnHoldParticle(noteX, noteY, note.track);
-                        }
-                    }
-
-                    if (this.gameTime >= endTime) {
-                        note.completed = true;
-                        if (note.hit) {
-                            this.handleJudge('perfect', note.track, true);
-                        }
-                    }
-                }
-            }
-        }
-
-        handleTrackPress(trackIdx) {
-            if (!this.isPlaying) return;
+            const trackX = this.trackAreaLeft + trackIdx * this.trackWidth + this.trackWidth / 2;
+            this.hitEffects.push({
+                x: trackX,
+                y: this.judgeLineY,
+                radius: 10,
+                maxRadius: 55,
+                alpha: 1.0,
+                color: TRACK_COLORS[trackIdx].glow
+            });
 
             let closestNote = null;
             let closestDiff = Infinity;
 
             for (const note of this.notes) {
                 if (note.completed || note.hit || note.track !== trackIdx) continue;
-
                 const diff = Math.abs(this.gameTime - note.time);
                 if (diff < this.CONFIG.MISS_WINDOW && diff < closestDiff) {
                     closestDiff = diff;
@@ -718,578 +363,269 @@
 
             if (closestNote) {
                 closestNote.hit = true;
-                if (closestNote.type === 'hold') {
-                    closestNote.holdStarted = true;
-                }
-
                 let judge = 'miss';
-                if (closestDiff <= this.CONFIG.PERFECT_WINDOW) {
-                    judge = 'perfect';
-                } else if (closestDiff <= this.CONFIG.GREAT_WINDOW) {
-                    judge = 'great';
-                } else if (closestDiff <= this.CONFIG.GOOD_WINDOW) {
-                    judge = 'good';
-                }
+                if (closestDiff <= this.CONFIG.PERFECT_WINDOW) judge = 'perfect';
+                else if (closestDiff <= this.CONFIG.GREAT_WINDOW) judge = 'great';
+                else if (closestDiff <= this.CONFIG.GOOD_WINDOW) judge = 'good';
 
-                if (closestNote.type === 'tap') {
+                if (closestNote.duration > 0) {
+                    closestNote.isHolding = true;
+                    this.handleJudge(judge);
+                } else {
                     closestNote.completed = true;
+                    this.handleJudge(judge);
                 }
-
-                this.handleJudge(judge, trackIdx, closestNote.type === 'hold');
             }
         }
 
-        handleTrackRelease(trackIdx) {
-            if (!this.isPlaying) return;
+        releaseTrack(trackIdx) {
+            this.trackPressState[trackIdx] = false;
 
             for (const note of this.notes) {
-                if (note.type === 'hold' && note.hit && !note.completed && note.track === trackIdx) {
+                if (note.track === trackIdx && note.isHolding && !note.completed) {
+                    note.isHolding = false;
                     const endTime = note.time + note.duration;
-                    const releaseDiff = endTime - this.gameTime;
-
-                    if (releaseDiff > this.CONFIG.GOOD_WINDOW) {
+                    if (Math.abs(this.gameTime - endTime) <= this.CONFIG.GOOD_WINDOW) {
                         note.completed = true;
-                        this.handleJudge('good', trackIdx);
+                        this.handleJudge('perfect');
+                    } else {
+                        note.completed = true;
+                        this.handleJudge('miss');
                     }
                 }
             }
         }
 
-        handleJudge(judge, trackIdx, isHoldHead = false) {
-            let scoreAdd = 0;
-
-            switch (judge) {
-                case 'perfect':
-                    scoreAdd = this.CONFIG.PERFECT_SCORE;
-                    this.combo++;
-                    this.stats.perfect++;
-                    break;
-                case 'great':
-                    scoreAdd = this.CONFIG.GREAT_SCORE;
-                    this.combo++;
-                    this.stats.great++;
-                    break;
-                case 'good':
-                    scoreAdd = this.CONFIG.GOOD_SCORE;
-                    this.combo++;
-                    this.stats.good++;
-                    break;
-                case 'miss':
-                    this.combo = 0;
-                    this.stats.miss++;
-                    break;
-            }
-
-            if (this.combo >= this.CONFIG.COMBO_BONUS_THRESHOLD) {
-                scoreAdd = Math.floor(scoreAdd * 1.1);
-            }
-
-            this.score += scoreAdd;
-            this.maxCombo = Math.max(this.maxCombo, this.combo);
-
-            if (!isHoldHead) {
-                this.updateScore();
-                this.updateCombo();
-                this.showJudge(judge);
-            } else if (judge !== 'miss') {
-                this.updateScore();
-                this.updateCombo();
-            }
-
-            const noteX = this.trackAreaLeft + trackIdx * this.trackWidth + this.trackWidth / 2;
-            const noteY = this.judgeLineY;
-
+        handleJudge(judge) {
             if (judge === 'miss') {
-                this.spawnMissEffect(noteX, noteY);
+                this.combo = 0;
+                this.stats.miss++;
             } else {
-                this.spawnHitParticles(noteX, noteY, trackIdx, judge);
+                this.combo++;
+                this.maxCombo = Math.max(this.maxCombo, this.combo);
+                if (judge === 'perfect') { this.score += 300; this.stats.perfect++; }
+                else if (judge === 'great') { this.score += 200; this.stats.great++; }
+                else if (judge === 'good') { this.score += 100; this.stats.good++; }
             }
+            if (this.scoreEl) this.scoreEl.textContent = this.score.toLocaleString();
         }
 
-        updateScore() {
-            this.scoreEl.textContent = this.score.toLocaleString();
+        endGame() {
+            if (this.isEnded) return;
+            this.isEnded = true;
+            this.isPlaying = false;
+            try { this.audio.pause(); } catch (e) { }
+            try { this.video.pause(); } catch (e) { }
+
+            this.gameUiEl.classList.add('hidden');
+            this.updateResultScreen();
+            if (this.endScreen) this.endScreen.classList.remove('hidden');
         }
 
-        updateCombo() {
-            if (this.combo > 0) {
-                this.comboEl.classList.remove('hidden');
-                this.comboValueEl.textContent = this.combo;
-                this.comboEl.style.animation = 'none';
-                this.comboEl.offsetHeight;
-                this.comboEl.style.animation = 'comboPulse 0.2s ease-out';
-            } else {
-                this.comboEl.classList.add('hidden');
+        updateResultScreen() {
+            const totalNotes = this.stats.perfect + this.stats.great + this.stats.good + this.stats.miss;
+            const accuracy = totalNotes > 0
+                ? Math.round(((this.stats.perfect * 1 + this.stats.great * 0.8 + this.stats.good * 0.5) / totalNotes) * 100)
+                : 0;
+
+            let rank = 'F';
+            if (accuracy >= 95) rank = 'S';
+            else if (accuracy >= 85) rank = 'A';
+            else if (accuracy >= 75) rank = 'B';
+            else if (accuracy >= 60) rank = 'C';
+            else rank = 'D';
+
+            const storageKey = `high_score_${this.currentSong ? this.currentSong.id : 'default'}_${this.selectedMode}`;
+            const previousBest = parseInt(localStorage.getItem(storageKey) || '0', 10);
+            if (this.score > previousBest) {
+                localStorage.setItem(storageKey, this.score.toString());
             }
+            const currentBest = Math.max(this.score, previousBest);
+
+            document.getElementById('grade-display').textContent = rank;
+            document.getElementById('final-score-value').textContent = this.score.toLocaleString();
+            document.getElementById('best-score').textContent = currentBest.toLocaleString();
+
+            document.getElementById('stat-perfect').textContent = this.stats.perfect;
+            document.getElementById('stat-great').textContent = this.stats.great;
+            document.getElementById('stat-good').textContent = this.stats.good;
+            document.getElementById('stat-miss').textContent = this.stats.miss;
+            document.getElementById('stat-maxcombo').textContent = this.maxCombo;
+            document.getElementById('stat-accuracy').textContent = accuracy + '%';
         }
 
-        showJudge(judge) {
-            this.judgeTextEl.className = 'judge-text';
-            switch (judge) {
-                case 'perfect':
-                    this.judgeTextEl.classList.add('judge-perfect');
-                    this.judgeTextEl.textContent = 'PERFECT';
-                    break;
-                case 'great':
-                    this.judgeTextEl.classList.add('judge-great');
-                    this.judgeTextEl.textContent = 'GREAT';
-                    break;
-                case 'good':
-                    this.judgeTextEl.classList.add('judge-good');
-                    this.judgeTextEl.textContent = 'GOOD';
-                    break;
-                case 'miss':
-                    this.judgeTextEl.classList.add('judge-miss');
-                    this.judgeTextEl.textContent = 'MISS';
-                    break;
-            }
+        loop(timestamp) {
+            if (!this.isPlaying || this.isPaused) return;
 
-            this.judgeEl.classList.remove('hidden');
-            this.judgeEl.style.animation = 'none';
-            this.judgeEl.offsetHeight;
-            this.judgeEl.style.animation = 'judgeAnim 0.5s ease-out forwards';
-        }
+            const dt = timestamp - this.lastTimestamp;
+            this.lastTimestamp = timestamp;
+            this.gameTime = timestamp - this.startTime;
 
-        spawnHitParticles(x, y, trackIdx, judge) {
-            const colors = TRACK_COLORS[trackIdx];
-            const intensity = judge === 'perfect' ? 1 : judge === 'great' ? 0.8 : 0.6;
-            const count = Math.floor(30 * intensity);
+            for (const note of this.notes) {
+                if (note.completed) continue;
 
-            for (let i = 0; i < count; i++) {
-                const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
-                const speed = 100 + Math.random() * 250 * intensity;
-                const size = 3 + Math.random() * 5;
-
-                this.particles.push({
-                    x: x,
-                    y: y,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed - 100,
-                    life: 1,
-                    decay: 1.5 + Math.random() * 1.5,
-                    size: size,
-                    color: Math.random() < 0.5 ? colors[0] : colors[1],
-                    type: 'spark',
-                });
-            }
-
-            this.particles.push({
-                x: x,
-                y: y,
-                vx: 0,
-                vy: 0,
-                life: 1,
-                decay: 3,
-                size: this.trackWidth * 0.6,
-                color: colors[0],
-                type: 'ring',
-            });
-
-            this.particles.push({
-                x: x,
-                y: y,
-                vx: 0,
-                vy: 0,
-                life: 1,
-                decay: 2,
-                size: this.trackWidth * 0.3,
-                color: '#ffffff',
-                type: 'flash',
-            });
-        }
-
-        spawnHoldParticle(x, y, trackIdx) {
-            const colors = TRACK_COLORS[trackIdx];
-            const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 0.8;
-            const speed = 50 + Math.random() * 100;
-
-            this.particles.push({
-                x: x + (Math.random() - 0.5) * this.trackWidth * 0.5,
-                y: y,
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed,
-                life: 1,
-                decay: 2 + Math.random(),
-                size: 2 + Math.random() * 4,
-                color: Math.random() < 0.5 ? colors[0] : colors[1],
-                type: 'spark',
-            });
-        }
-
-        spawnMissEffect(x, y) {
-            for (let i = 0; i < 15; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const speed = 50 + Math.random() * 100;
-
-                this.particles.push({
-                    x: x,
-                    y: y,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
-                    life: 1,
-                    decay: 2,
-                    size: 2 + Math.random() * 3,
-                    color: '#ff4444',
-                    type: 'spark',
-                });
-            }
-        }
-
-        updateHoldEffects(dt) {
-            for (let i = this.holdEffects.length - 1; i >= 0; i--) {
-                this.holdEffects[i].life -= dt / 1000 * 2;
-                if (this.holdEffects[i].life <= 0) {
-                    this.holdEffects.splice(i, 1);
+                if (note.isHolding) {
+                    if (this.gameTime >= note.time + note.duration) {
+                        note.completed = true;
+                        note.isHolding = false;
+                        this.handleJudge('perfect');
+                    } else {
+                        this.score += 2;
+                        if (this.scoreEl) this.scoreEl.textContent = this.score.toLocaleString();
+                    }
+                }
+                else if (!note.hit && this.gameTime - note.time > this.CONFIG.MISS_WINDOW) {
+                    note.completed = true;
+                    this.handleJudge('miss');
                 }
             }
-        }
 
-        updateParticles(dt) {
-            const dtSec = dt / 1000;
-            for (let i = this.particles.length - 1; i >= 0; i--) {
-                const p = this.particles[i];
-                p.life -= dtSec * p.decay;
-                p.x += p.vx * dtSec;
-                p.y += p.vy * dtSec;
-                p.vy += 500 * dtSec;
-                p.vx *= 0.98;
+            this.render();
 
-                if (p.life <= 0) {
-                    this.particles.splice(i, 1);
-                }
+            if (!this.isEnded) {
+                requestAnimationFrame(this.loop);
             }
         }
 
         render() {
             this.ctx.clearRect(0, 0, this.width, this.height);
-
             this.drawTracks();
             this.drawNotes();
             this.drawJudgeLine();
-            this.drawTrackFlashes();
-            this.drawParticles();
+            this.drawHitEffects();
         }
 
         drawTracks() {
             for (let i = 0; i < this.CONFIG.TRACK_COUNT; i++) {
                 const x = this.trackAreaLeft + i * this.trackWidth;
 
-                const gradient = this.ctx.createLinearGradient(x, 0, x, this.height);
-                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.02)');
-                gradient.addColorStop(1, 'rgba(255, 255, 255, 0.08)');
+                if (this.trackPressState[i]) {
+                    const grad = this.ctx.createLinearGradient(0, 0, 0, this.height);
+                    grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+                    grad.addColorStop(1, TRACK_COLORS[i].glow + '55');
+                    this.ctx.fillStyle = grad;
+                    this.ctx.fillRect(x + 1, 0, this.trackWidth - 2, this.height);
+                } else {
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+                    this.ctx.fillRect(x + 1, 0, this.trackWidth - 2, this.height);
+                }
 
-                this.ctx.fillStyle = gradient;
-                this.ctx.fillRect(x + 1, 0, this.trackWidth - 2, this.height);
-
-                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
                 this.ctx.lineWidth = 1;
                 this.ctx.beginPath();
                 this.ctx.moveTo(x, 0);
                 this.ctx.lineTo(x, this.height);
                 this.ctx.stroke();
-
-                if (this.trackPressState[i]) {
-                    const pressGradient = this.ctx.createLinearGradient(
-                        x, this.judgeLineY - 200,
-                        x, this.judgeLineY + 50
-                    );
-                    const colors = TRACK_COLORS[i];
-                    pressGradient.addColorStop(0, `${colors[0]}00`);
-                    pressGradient.addColorStop(1, `${colors[0]}40`);
-                    this.ctx.fillStyle = pressGradient;
-                    this.ctx.fillRect(x + 1, this.judgeLineY - 200, this.trackWidth - 2, 250);
-                }
             }
-
-            const rightEdge = this.trackAreaLeft + this.trackAreaWidth;
-            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-            this.ctx.beginPath();
-            this.ctx.moveTo(rightEdge, 0);
-            this.ctx.lineTo(rightEdge, this.height);
-            this.ctx.stroke();
         }
 
         drawNotes() {
             for (const note of this.notes) {
-                if (note.completed) continue;
+                if (note.completed && !note.isHolding) continue;
 
+                const colorConfig = TRACK_COLORS[note.track];
                 const trackX = this.trackAreaLeft + note.track * this.trackWidth;
                 const centerX = trackX + this.trackWidth / 2;
-                const colors = TRACK_COLORS[note.track];
+                const noteW = this.trackWidth * 0.82;
+                const noteH = 16;
 
-                if (note.type === 'tap') {
-                    const y = this.calculateNoteY(note.time);
-                    if (y < -50 || y > this.height + 50) continue;
+                const startY = this.judgeLineY - (note.time - this.gameTime) * (this.CONFIG.NOTE_SPEED / 1000);
 
-                    this.drawTapNote(centerX, y, colors, note.hit);
-                } else if (note.type === 'hold') {
-                    const headY = this.calculateNoteY(note.time);
-                    const endTime = note.time + note.duration;
-                    const tailY = this.calculateNoteY(endTime);
+                if (note.duration > 0) {
+                    const endY = this.judgeLineY - ((note.time + note.duration) - this.gameTime) * (this.CONFIG.NOTE_SPEED / 1000);
+                    const headY = note.isHolding ? this.judgeLineY : startY;
 
-                    if (tailY < -100 || headY > this.height + 100) continue;
+                    if (headY >= -100 && endY <= this.height + 100) {
+                        const tailHeight = Math.max(0, headY - endY);
 
-                    this.drawHoldNoteBody(
-                        centerX,
-                        Math.max(headY, -100),
-                        Math.min(tailY, this.height + 50),
-                        colors,
-                        note
-                    );
+                        const tailGrad = this.ctx.createLinearGradient(0, endY, 0, headY);
+                        tailGrad.addColorStop(0, colorConfig.glow + '33');
+                        tailGrad.addColorStop(1, colorConfig.main + 'aa');
+                        this.ctx.fillStyle = tailGrad;
+                        this.ctx.fillRect(centerX - noteW * 0.4, endY, noteW * 0.8, tailHeight);
 
-                    if (headY >= -50 && headY <= this.height + 50) {
-                        this.drawTapNote(centerX, headY, colors, note.hit);
+                        this.drawStylizedNote(centerX, headY, noteW, noteH, colorConfig);
+                    }
+                } else {
+                    if (startY >= -50 && startY <= this.height + 50) {
+                        this.drawStylizedNote(centerX, startY, noteW, noteH, colorConfig);
                     }
                 }
             }
         }
 
-        calculateNoteY(noteTime) {
-            const timeToJudge = noteTime - this.gameTime;
-            const pixelsPerMs = this.CONFIG.NOTE_SPEED / 1000;
-            return this.judgeLineY - timeToJudge * pixelsPerMs;
-        }
-
-        drawTapNote(x, y, colors, isHit) {
-            const width = this.trackWidth * 0.75;
-            const height = this.noteHeight;
-            const halfW = width / 2;
-            const halfH = height / 2;
-
+        drawStylizedNote(x, y, w, h, colorConfig) {
             this.ctx.save();
+            this.ctx.translate(x - w / 2, y - h / 2);
 
-            if (!isHit) {
-                this.ctx.shadowColor = colors[1];
-                this.ctx.shadowBlur = 25;
-            }
+            this.ctx.shadowColor = colorConfig.glow;
+            this.ctx.shadowBlur = 14;
 
-            const gradient = this.ctx.createLinearGradient(x, y - halfH, x, y + halfH);
-            gradient.addColorStop(0, colors[0]);
-            gradient.addColorStop(0.5, '#ffffff');
-            gradient.addColorStop(1, colors[1]);
+            const grad = this.ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, '#ffffff');
+            grad.addColorStop(0.4, colorConfig.glow);
+            grad.addColorStop(1, colorConfig.main);
 
-            this.ctx.fillStyle = isHit ? colors[0] + '60' : gradient;
+            this.ctx.fillStyle = grad;
 
-            const r = halfH * 0.8;
+            const r = 5;
             this.ctx.beginPath();
-            this.ctx.moveTo(x - halfW + r, y - halfH);
-            this.ctx.lineTo(x + halfW - r, y - halfH);
-            this.ctx.quadraticCurveTo(x + halfW, y - halfH, x + halfW, y - halfH + r);
-            this.ctx.lineTo(x + halfW, y + halfH - r);
-            this.ctx.quadraticCurveTo(x + halfW, y + halfH, x + halfW - r, y + halfH);
-            this.ctx.lineTo(x - halfW + r, y + halfH);
-            this.ctx.quadraticCurveTo(x - halfW, y + halfH, x - halfW, y + halfH - r);
-            this.ctx.lineTo(x - halfW, y - halfH + r);
-            this.ctx.quadraticCurveTo(x - halfW, y - halfH, x - halfW + r, y - halfH);
+            this.ctx.moveTo(r, 0);
+            this.ctx.lineTo(w - r, 0);
+            this.ctx.quadraticCurveTo(w, 0, w, r);
+            this.ctx.lineTo(w, h - r);
+            this.ctx.quadraticCurveTo(w, h, w - r, h);
+            this.ctx.lineTo(r, h);
+            this.ctx.quadraticCurveTo(0, h, 0, h - r);
+            this.ctx.lineTo(0, r);
+            this.ctx.quadraticCurveTo(0, 0, r, 0);
             this.ctx.closePath();
             this.ctx.fill();
 
-            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-            this.ctx.lineWidth = 2;
-            this.ctx.stroke();
-
-            if (!isHit) {
-                const highlightGradient = this.ctx.createLinearGradient(
-                    x - halfW * 0.6, y - halfH,
-                    x + halfW * 0.2, y + halfH
-                );
-                highlightGradient.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
-                highlightGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-                this.ctx.fillStyle = highlightGradient;
-                this.ctx.fill();
-            }
-
-            this.ctx.restore();
-        }
-
-        drawHoldNoteBody(x, topY, bottomY, colors, note) {
-            const width = this.trackWidth * 0.55;
-            const halfW = width / 2;
-
-            this.ctx.save();
-
-            const progress = note.hit ? Math.min(1, (this.gameTime - note.time) / note.duration) : 0;
-            const activatedY = topY + (bottomY - topY) * progress;
-
-            if (progress < 1) {
-                const bodyGradient = this.ctx.createLinearGradient(x - halfW, 0, x + halfW, 0);
-                bodyGradient.addColorStop(0, colors[0] + '40');
-                bodyGradient.addColorStop(0.5, colors[0] + '90');
-                bodyGradient.addColorStop(1, colors[0] + '40');
-
-                this.ctx.fillStyle = note.hit ? colors[0] + '20' : bodyGradient;
-                this.ctx.fillRect(x - halfW, activatedY, width, bottomY - activatedY);
-            }
-
-            if (progress > 0) {
-                const filledGradient = this.ctx.createLinearGradient(x - halfW, 0, x + halfW, 0);
-                filledGradient.addColorStop(0, colors[1] + '80');
-                filledGradient.addColorStop(0.5, '#ffffffc0');
-                filledGradient.addColorStop(1, colors[1] + '80');
-
-                this.ctx.fillStyle = filledGradient;
-                this.ctx.fillRect(x - halfW, topY, width, activatedY - topY);
-            }
-
-            this.ctx.strokeStyle = colors[1];
-            this.ctx.lineWidth = 2;
-            this.ctx.globalAlpha = 0.6;
-            this.ctx.strokeRect(x - halfW, topY, width, bottomY - topY);
-            this.ctx.globalAlpha = 1;
-
-            if (note.hit && this.trackPressState[note.track] && this.gameTime < note.time + note.duration) {
-                const glowGradient = this.ctx.createRadialGradient(x, activatedY, 0, x, activatedY, width);
-                glowGradient.addColorStop(0, colors[0] + 'aa');
-                glowGradient.addColorStop(1, colors[0] + '00');
-                this.ctx.fillStyle = glowGradient;
-                this.ctx.fillRect(x - width, activatedY - width, width * 2, width * 2);
-            }
-
-            this.ctx.restore();
-        }
-
-        drawJudgeLine() {
-            const y = this.judgeLineY;
-            const left = this.trackAreaLeft;
-            const right = this.trackAreaLeft + this.trackAreaWidth;
-
-            this.ctx.save();
-
-            const glowGradient = this.ctx.createLinearGradient(0, y - 30, 0, y + 30);
-            glowGradient.addColorStop(0, 'rgba(255, 215, 0, 0)');
-            glowGradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.4)');
-            glowGradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
-            this.ctx.fillStyle = glowGradient;
-            this.ctx.fillRect(left, y - 30, this.trackAreaWidth, 60);
-
-            this.ctx.strokeStyle = '#ffd700';
-            this.ctx.lineWidth = 4;
-            this.ctx.shadowColor = '#ffd700';
-            this.ctx.shadowBlur = 20;
-            this.ctx.beginPath();
-            this.ctx.moveTo(left, y);
-            this.ctx.lineTo(right, y);
-            this.ctx.stroke();
-
-            this.ctx.strokeStyle = '#ffffff';
-            this.ctx.lineWidth = 2;
             this.ctx.shadowBlur = 0;
-            this.ctx.beginPath();
-            this.ctx.moveTo(left, y);
-            this.ctx.lineTo(right, y);
-            this.ctx.stroke();
-
-            for (let i = 0; i < this.CONFIG.TRACK_COUNT; i++) {
-                const trackCenter = left + i * this.trackWidth + this.trackWidth / 2;
-                const colors = TRACK_COLORS[i];
-
-                const buttonSize = this.trackWidth * 0.7;
-                const halfB = buttonSize / 2;
-                const pressed = this.trackPressState[i];
-
-                const btnGradient = this.ctx.createLinearGradient(
-                    trackCenter, y - halfB,
-                    trackCenter, y + halfB
-                );
-                btnGradient.addColorStop(0, pressed ? colors[0] : colors[0] + '60');
-                btnGradient.addColorStop(1, pressed ? colors[1] : colors[1] + '60');
-
-                this.ctx.fillStyle = btnGradient;
-                this.ctx.shadowColor = pressed ? colors[1] : colors[1] + '80';
-                this.ctx.shadowBlur = pressed ? 30 : 15;
-
-                const r = 10;
-                this.ctx.beginPath();
-                this.ctx.moveTo(trackCenter - halfB + r, y - halfB);
-                this.ctx.lineTo(trackCenter + halfB - r, y - halfB);
-                this.ctx.quadraticCurveTo(trackCenter + halfB, y - halfB, trackCenter + halfB, y - halfB + r);
-                this.ctx.lineTo(trackCenter + halfB, y + halfB - r);
-                this.ctx.quadraticCurveTo(trackCenter + halfB, y + halfB, trackCenter + halfB - r, y + halfB);
-                this.ctx.lineTo(trackCenter - halfB + r, y + halfB);
-                this.ctx.quadraticCurveTo(trackCenter - halfB, y + halfB, trackCenter - halfB, y + halfB - r);
-                this.ctx.lineTo(trackCenter - halfB, y - halfB + r);
-                this.ctx.quadraticCurveTo(trackCenter - halfB, y - halfB, trackCenter - halfB + r, y - halfB);
-                this.ctx.closePath();
-                this.ctx.fill();
-
-                this.ctx.strokeStyle = pressed ? '#ffffff' : 'rgba(255, 255, 255, 0.5)';
-                this.ctx.lineWidth = pressed ? 3 : 2;
-                this.ctx.shadowBlur = 0;
-                this.ctx.stroke();
-
-                this.ctx.fillStyle = pressed ? '#ffffff' : 'rgba(255, 255, 255, 0.7)';
-                this.ctx.font = `900 ${this.trackWidth * 0.35}px Impact, Arial Black, sans-serif`;
-                this.ctx.textAlign = 'center';
-                this.ctx.textBaseline = 'middle';
-                this.ctx.fillText(KEY_MAP[i].toUpperCase(), trackCenter, y);
-            }
+            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+            this.ctx.fillRect(4, 2, w - 8, 3);
 
             this.ctx.restore();
         }
 
-        drawTrackFlashes() {
-            for (let i = 0; i < this.CONFIG.TRACK_COUNT; i++) {
-                if (this.trackFlashState[i] <= 0) continue;
+        drawHitEffects() {
+            for (let i = this.hitEffects.length - 1; i >= 0; i--) {
+                const fx = this.hitEffects[i];
+                fx.radius += 2.5;
+                fx.alpha -= 0.05;
 
-                const x = this.trackAreaLeft + i * this.trackWidth;
-                const colors = TRACK_COLORS[i];
-                const alpha = this.trackFlashState[i] * 0.5;
-
-                const flashGradient = this.ctx.createLinearGradient(
-                    x, this.judgeLineY - 300,
-                    x, this.judgeLineY + 50
-                );
-                flashGradient.addColorStop(0, colors[0] + '00');
-                flashGradient.addColorStop(1, colors[0] + Math.floor(alpha * 255).toString(16).padStart(2, '0'));
-
-                this.ctx.fillStyle = flashGradient;
-                this.ctx.fillRect(x, this.judgeLineY - 300, this.trackWidth, 350);
-            }
-        }
-
-        drawParticles() {
-            for (const p of this.particles) {
-                const alpha = Math.max(0, Math.min(1, p.life));
-
-                this.ctx.save();
-                this.ctx.globalAlpha = alpha;
-
-                if (p.type === 'spark') {
-                    this.ctx.fillStyle = p.color;
-                    this.ctx.shadowColor = p.color;
-                    this.ctx.shadowBlur = 10;
-                    this.ctx.beginPath();
-                    this.ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
-                    this.ctx.fill();
-                } else if (p.type === 'ring') {
-                    const ringSize = p.size * (2 - alpha);
-                    this.ctx.strokeStyle = p.color;
-                    this.ctx.lineWidth = 5 * alpha;
-                    this.ctx.shadowColor = p.color;
-                    this.ctx.shadowBlur = 20;
-                    this.ctx.beginPath();
-                    this.ctx.arc(p.x, p.y, ringSize, 0, Math.PI * 2);
-                    this.ctx.stroke();
-                } else if (p.type === 'flash') {
-                    const flashSize = p.size * alpha;
-                    const gradient = this.ctx.createRadialGradient(
-                        p.x, p.y, 0,
-                        p.x, p.y, flashSize
-                    );
-                    gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
-                    gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
-                    this.ctx.fillStyle = gradient;
-                    this.ctx.beginPath();
-                    this.ctx.arc(p.x, p.y, flashSize, 0, Math.PI * 2);
-                    this.ctx.fill();
+                if (fx.alpha <= 0) {
+                    this.hitEffects.splice(i, 1);
+                    continue;
                 }
 
+                this.ctx.save();
+                this.ctx.strokeStyle = fx.color;
+                this.ctx.lineWidth = 3;
+                this.ctx.globalAlpha = fx.alpha;
+                this.ctx.shadowColor = fx.color;
+                this.ctx.shadowBlur = 15;
+
+                this.ctx.beginPath();
+                this.ctx.arc(fx.x, fx.y, fx.radius, 0, Math.PI * 2);
+                this.ctx.stroke();
                 this.ctx.restore();
             }
         }
+
+        drawJudgeLine() {
+            this.ctx.shadowColor = '#00e5ff';
+            this.ctx.shadowBlur = 18;
+            this.ctx.strokeStyle = '#ffffff';
+            this.ctx.lineWidth = 4;
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.trackAreaLeft, this.judgeLineY);
+            this.ctx.lineTo(this.trackAreaLeft + this.trackAreaWidth, this.judgeLineY);
+            this.ctx.stroke();
+            this.ctx.shadowBlur = 0;
+        }
     }
 
-    window.addEventListener('load', () => {
-        const game = new Game();
-        window._game = game;
-    });
+    window.addEventListener('load', () => { window._game = new Game(); });
 })();
