@@ -1,15 +1,28 @@
-// game.js - Version 2026.09.13-BabyMonster
+// game.js - Version 2026.09.13-RefinedSound
 (function () {
     'use strict';
 
     const SONG_LIST = [
-        { id: 'sheesh', name: 'SHEESH', artist: 'BABYMONSTER', cover: '💥', coverBg: 'linear-gradient(135deg, #ff0055, #6600cc)', coverImg: './covers/sheesh_small.jpg', detailImg: './covers/sheesh_big.jpg', video: './songs/sheesh.mp4', audio: './songs/sheesh.mp3' },
-        { id: 'batter_up', name: 'BATTER UP', artist: 'BABYMONSTER', cover: '⚾', coverBg: 'linear-gradient(135deg, #0055ff, #00e5ff)', coverImg: './covers/batter_up_small.jpg', detailImg: './covers/batter_up_big.jpg', video: './songs/batter_up.mp4', audio: './songs/batter_up.mp3' },
-        { id: 'stuck_in_the_middle', name: 'STUCK IN THE MIDDLE', artist: 'BABYMONSTER', cover: '💫', coverBg: 'linear-gradient(135deg, #ffaa00, #ff2266)', coverImg: './covers/stuck_small.jpg', detailImg: './covers/stuck_big.jpg', video: './songs/stuck.mp4', audio: './songs/stuck.mp3' },
-        { id: 'forever', name: 'FOREVER', artist: 'BABYMONSTER', cover: '👑', coverBg: 'linear-gradient(135deg, #00ffcc, #0066ff)', coverImg: './covers/forever_small.jpg', detailImg: './covers/forever_big.jpg', video: './songs/forever.mp4', audio: './songs/forever.mp3' },
-        { id: 'like_that', name: 'LIKE THAT', artist: 'BABYMONSTER', cover: '🔥', coverBg: 'linear-gradient(135deg, #ff2200, #880000)', coverImg: './covers/like_that_small.jpg', detailImg: './covers/like_that_big.jpg', video: './songs/like_that.mp4', audio: './songs/like_that.mp3' },
-        { id: 'click_clack', name: 'CLICK CLACK', artist: 'BABYMONSTER', cover: '🎤', coverBg: 'linear-gradient(135deg, #333333, #000000)', coverImg: './covers/click_clack_small.jpg', detailImg: './covers/click_clack_big.jpg', video: './songs/click_clack.mp4', audio: './songs/click_clack.mp3' },
-        { id: 'drip', name: 'DRIP', artist: 'BABYMONSTER', cover: '💧', coverBg: 'linear-gradient(135deg, #0099ff, #0022aa)', coverImg: './covers/drip_small.jpg', detailImg: './covers/drip_big.jpg', video: './songs/drip.mp4', audio: './songs/drip.mp3' }
+        { id: 'iloveyou', name: 'I LOVE YOU', artist: 'TREASURE', cover: '💎', coverBg: 'linear-gradient(135deg, #00aaff, #0066ff)', coverImg: './covers/iloveyou_small.jpg', detailImg: './covers/iloveyou_big.jpg', video: './songs/iloveyou.mp4', audio: './songs/iloveyou.mp3' },
+        { id: 'bona_bona', name: 'BONA BONA', artist: 'TREASURE', cover: '🔥', coverBg: 'linear-gradient(135deg, #ff4466, #cc0033)', coverImg: './covers/bona_bona_small.jpg', detailImg: './covers/bona_bona_big.jpg', video: './songs/bona_bona.mp4', audio: './songs/bona_bona.mp3' },
+        { id: 'boy', name: 'BOY', artist: 'TREASURE', cover: '💙', coverBg: 'linear-gradient(135deg, #0055ff, #0022aa)', coverImg: './covers/boy_small.jpg', detailImg: './covers/boy_big.jpg', video: './songs/boy.mp4', audio: './songs/boy.mp3' },
+        { id: 'darari', name: 'DARARI', artist: 'TREASURE', cover: '🎶', coverBg: 'linear-gradient(135deg, #ffaa00, #ff4400)', coverImg: './covers/darari_small.jpg', detailImg: './covers/darari_big.jpg', video: './songs/darari.mp4', audio: './songs/darari.mp3' },
+        { id: 'jikjin', name: 'JIKJIN', artist: 'TREASURE', cover: '⚡', coverBg: 'linear-gradient(135deg, #00e5ff, #0088cc)', coverImg: './covers/jikjin_small.jpg', detailImg: './covers/jikjin_big.jpg', video: './songs/jikjin.mp4', audio: './songs/jikjin.mp3' },
+        { id: 'hello', name: 'HELLO', artist: 'TREASURE', cover: '✨', coverBg: 'linear-gradient(135deg, #7700ff, #aa00ff)', coverImg: './covers/hello_small.jpg', detailImg: './covers/hello_big.jpg', video: './songs/hello.mp4', audio: './songs/hello.mp3' },
+        { id: 'mmm', name: 'MMM', artist: 'TREASURE', cover: '🖤', coverBg: 'linear-gradient(135deg, #333333, #000000)', coverImg: './covers/mmm_small.jpg', detailImg: './covers/mmm_big.jpg', video: './songs/mmm.mp4', audio: './songs/mmm.mp3' },
+        { id: 'my_treasure', name: 'MY TREASURE', artist: 'TREASURE', cover: '☀️', coverBg: 'linear-gradient(135deg, #ffea00, #ff9900)', coverImg: './covers/my_treasure_small.jpg', detailImg: './covers/my_treasure_big.jpg', video: './songs/my_treasure.mp4', audio: './songs/my_treasure.mp3' },
+        { id: 'king_kong', name: 'KING KONG', artist: 'TREASURE', cover: '🦍', coverBg: 'linear-gradient(135deg, #ff2200, #880000)', coverImg: './covers/king_kong_small.jpg', detailImg: './covers/king_kong_big.jpg', video: './songs/king_kong.mp4', audio: './songs/king_kong.mp3' },
+        { id: 'b_o_m_b', name: 'B.O.M.B', artist: 'TREASURE', cover: '💣', coverBg: 'linear-gradient(135deg, #ff00aa, #aa0055)', coverImg: './covers/bomb_small.jpg', detailImg: './covers/bomb_big.jpg', video: './songs/bomb.mp4', audio: './songs/bomb.mp3' },
+        { id: 'oranje', name: 'ORANGE', artist: 'TREASURE', cover: '🍊', coverBg: 'linear-gradient(135deg, #ff7700, #cc4400)', coverImg: './covers/orange_small.jpg', detailImg: './covers/orange_big.jpg', video: './songs/orange.mp4', audio: './songs/orange.mp3' },
+        { id: 'going_crazy', name: 'GOING CRAZY', artist: 'TREASURE', cover: '🌀', coverBg: 'linear-gradient(135deg, #00ffcc, #009977)', coverImg: './covers/going_crazy_small.jpg', detailImg: './covers/going_crazy_big.jpg', video: './songs/going_crazy.mp4', audio: './songs/going_crazy.mp3' },
+        { id: 'wonderland', name: 'WONDERLAND', artist: 'TREASURE', cover: '🌌', coverBg: 'linear-gradient(135deg, #4400ff, #220088)', coverImg: './covers/wonderland_small.jpg', detailImg: './covers/wonderland_big.jpg', video: './songs/wonderland.mp4', audio: './songs/wonderland.mp3' },
+        { id: 'run', name: 'RUN', artist: 'TREASURE', cover: '🏃', coverBg: 'linear-gradient(135deg, #00ff66, #00aa33)', coverImg: './covers/run_small.jpg', detailImg: './covers/run_big.jpg', video: './songs/run.mp4', audio: './songs/run.mp3' },
+        { id: 'g_o_a_t', name: 'G.O.A.T', artist: 'TREASURE', cover: '🐐', coverBg: 'linear-gradient(135deg, #bbbbbb, #555555)', coverImg: './covers/goat_small.jpg', detailImg: './covers/goat_big.jpg', video: './songs/goat.mp4', audio: './songs/goat.mp3' },
+        { id: 'volcano', name: 'VOLKANO', artist: 'TREASURE', cover: '🌋', coverBg: 'linear-gradient(135deg, #ff3300, #991100)', coverImg: './covers/volkano_small.jpg', detailImg: './covers/volkano_big.jpg', video: './songs/volkano.mp4', audio: './songs/volkano.mp3' },
+        { id: 'thank_you', name: 'THANK YOU', artist: 'TREASURE', cover: '💌', coverBg: 'linear-gradient(135deg, #ff6699, #ff3366)', coverImg: './covers/thank_you_small.jpg', detailImg: './covers/thank_you_big.jpg', video: './songs/thank_you.mp4', audio: './songs/thank_you.mp3' },
+        { id: 'hold_it_in', name: 'HOLD IT IN', artist: 'TREASURE', cover: '🛡️', coverBg: 'linear-gradient(135deg, #0099ff, #0044aa)', coverImg: './covers/hold_it_in_small.jpg', detailImg: './covers/hold_it_in_big.jpg', video: './songs/hold_it_in.mp4', audio: './songs/hold_it_in.mp3' },
+        { id: 'move', name: 'MOVE (T5)', artist: 'TREASURE', cover: '💃', coverBg: 'linear-gradient(135deg, #9900ff, #5500aa)', coverImg: './covers/move_small.jpg', detailImg: './covers/move_big.jpg', video: './songs/move.mp4', audio: './songs/move.mp3' },
+        { id: 'here_i_stand', name: 'HERE I STAND', artist: 'TREASURE', cover: '🎤', coverBg: 'linear-gradient(135deg, #00e5ff, #0055ff)', coverImg: './covers/here_i_stand_small.jpg', detailImg: './covers/here_i_stand_big.jpg', video: './songs/here_i_stand.mp4', audio: './songs/here_i_stand.mp3' }
     ];
 
     const CONFIG_BASE = {
@@ -66,17 +79,23 @@
                 osc.start(now + idx * 0.06); osc.stop(now + idx * 0.06 + 0.15);
             });
         }
+        // 升级版高级打击音效：音量极低、频率清脆、带有短促的高级电子木鱼/水晶触感
         playHit() {
             this.init();
             if (!this.ctx) return;
             const now = this.ctx.currentTime;
+
+            // 主音：清脆的高音打击
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(1046.50, now);
+            osc.frequency.setValueAtTime(1046.50, now); // C6
             osc.frequency.exponentialRampToValueAtTime(523.25, now + 0.04);
+
+            // 极大降低音量，确保完全不遮挡歌曲
             gain.gain.setValueAtTime(0.03, now);
             gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
+
             osc.connect(gain);
             gain.connect(this.ctx.destination);
             osc.start(now);
@@ -428,7 +447,7 @@
 
         handleJudge(judge, x) {
             if (judge !== 'miss') {
-                this.sound.playHit();
+                this.sound.playHit(); // 只有打击成功时才触发清脆的音效
             }
             if (judge === 'miss') {
                 this.combo = 0;
