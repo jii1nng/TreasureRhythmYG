@@ -14,14 +14,77 @@
         document.head.appendChild(script);
     }
 
+    // 1. 获取或首次询问玩家名字
     function getPlayerName() {
         let name = localStorage.getItem('player_id_name');
         if (!name) {
-            name = 'TREASURE_Maker_' + Math.floor(1000 + Math.random() * 9000);
-            localStorage.setItem('player_id_name', name);
+            // 如果没有名字，弹窗让用户输入
+            document.getElementById('name-modal').style.display = 'flex';
+            return null; // 暂缓游戏开始或等待输入
         }
         return name;
     }
+
+    // 绑定名字保存按钮事件
+    document.getElementById('save-name-btn').addEventListener('click', () => {
+        const inputVal = document.getElementById('player-name-input').value.trim();
+        if (inputVal) {
+            localStorage.setItem('player_id_name', inputVal);
+            document.getElementById('name-modal').style.display = 'none';
+            // 名字保存后可以继续进入游戏或刷新状态
+        } else {
+            alert('please input a player name!');
+        }
+    });
+
+    // 2. 打开和关闭排行榜
+    document.getElementById('open-leaderboard-btn').addEventListener('click', async () => {
+        document.getElementById('leaderboard-modal').style.display = 'flex';
+        await fetchAndRenderLeaderboard();
+    });
+
+    document.getElementById('close-leaderboard-btn').addEventListener('click', () => {
+        document.getElementById('leaderboard-modal').style.display = 'none';
+    });
+
+    // 3. 从 Supabase 拉取排行榜数据并渲染
+    async function fetchAndRenderLeaderboard() {
+        const listContainer = document.getElementById('leaderboard-list');
+        listContainer.innerHTML = 'loading...';
+
+        try {
+            // 假设你的 supabase 客户端叫 window.supabaseClient 或 supabase
+            const { data, error } = await supabaseClient
+                .from('leaderboard')
+                .select('player_name, song_name, score')
+                .order('score', { ascending: false })
+                .limit(10); // 取前10名
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                listContainer.innerHTML = '<p>no leaderboard data available!</p>';
+                return;
+            }
+
+            let html = '<table style="width:100%; text-align:left;"><tr><th>rank</th><th>player</th><th>song</th><th>score</th></tr>';
+            data.forEach((row, index) => {
+                html += `<tr>
+                <td>${index + 1}</td>
+                <td>${row.player_name}</td>
+                <td>${row.song_name}</td>
+                <td>${row.score}</td>
+            </tr>`;
+            });
+            html += '</table>';
+            listContainer.innerHTML = html;
+
+        } catch (err) {
+            console.error('loading leaderboard failed:', err);
+            listContainer.innerHTML = '<p>loading leaderboard failed!</p>';
+        }
+    }
+
 
     const SONG_LIST = [
         { id: 'iloveyou', name: 'I LOVE YOU', artist: 'TREASURE', cover: '💎', coverBg: 'linear-gradient(135deg, #00aaff, #0066ff)', coverImg: './covers/iloveyou_small.jpg', detailImg: './covers/iloveyou_big.jpg', video: './songs/iloveyou.mp4', audio: './songs/iloveyou.mp3' },
@@ -1192,4 +1255,21 @@
                 .catch((err) => console.log('PWA 注册失败:', err));
         }
     });
-})();
+})();// 页面加载完成后检查名字
+window.addEventListener('DOMContentLoaded', () => {
+    const savedName = localStorage.getItem('player_id_name');
+    if (!savedName) {
+        document.getElementById('name-modal').style.display = 'flex';
+    }
+});
+
+// 保存名字按钮事件
+document.getElementById('save-name-btn').addEventListener('click', () => {
+    const inputVal = document.getElementById('player-name-input').value.trim();
+    if (inputVal) {
+        localStorage.setItem('player_id_name', inputVal);
+        document.getElementById('name-modal').style.display = 'none';
+    } else {
+        alert('please input a player name!');
+    }
+});
