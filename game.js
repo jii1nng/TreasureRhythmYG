@@ -1,4 +1,4 @@
-// game.js - Version 2026.09.13-RefinedSound
+// game.js - Version 2026.09.13-HighScoreIntegrated
 (function () {
     'use strict';
 
@@ -25,7 +25,6 @@
         { id: 'here_i_stand', name: 'HERE I STAND', artist: 'TREASURE', cover: '🎤', coverBg: 'linear-gradient(135deg, #00e5ff, #0055ff)', coverImg: './covers/here_i_stand_small.jpg', detailImg: './covers/here_i_stand_big.jpg', video: './songs/here_i_stand.mp4', audio: './songs/here_i_stand.mp3' },
         { id: 'everything', name: 'EVERYTHING', artist: 'TREASURE', cover: '🎤', coverBg: 'linear-gradient(135deg, #00e5ff, #0055ff)', coverImg: './covers/everything_small.jpg', detailImg: './covers/everything_big.jpg', video: './songs/everything.mp4', audio: './songs/everything.mp3' },
         { id: 'paradise', name: 'PARADISE', artist: 'TREASURE', cover: '🎤', coverBg: 'linear-gradient(135deg, #00e5ff, #0055ff)', coverImg: './covers/paradise_small.jpg', detailImg: './covers/paradise_big.jpg', video: './songs/paradise.mp4', audio: './songs/paradise.mp3' }
-
     ];
 
     const CONFIG_BASE = {
@@ -82,23 +81,17 @@
                 osc.start(now + idx * 0.06); osc.stop(now + idx * 0.06 + 0.15);
             });
         }
-        // 升级版高级打击音效：音量极低、频率清脆、带有短促的高级电子木鱼/水晶触感
         playHit() {
             this.init();
             if (!this.ctx) return;
             const now = this.ctx.currentTime;
-
-            // 主音：清脆的高音打击
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(1046.50, now); // C6
+            osc.frequency.setValueAtTime(1046.50, now);
             osc.frequency.exponentialRampToValueAtTime(523.25, now + 0.04);
-
-            // 极大降低音量，确保完全不遮挡歌曲
             gain.gain.setValueAtTime(0.03, now);
             gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
-
             osc.connect(gain);
             gain.connect(this.ctx.destination);
             osc.start(now);
@@ -164,6 +157,10 @@
             if (!this.songListEl) return;
             this.songListEl.innerHTML = '';
             SONG_LIST.forEach(song => {
+                // 读取当前歌曲在 normal 模式下的本地最高分用于列表展示
+                const storageKey = `high_score_${song.id}_normal`;
+                const highScore = parseInt(localStorage.getItem(storageKey) || '0', 10);
+
                 const card = document.createElement('div');
                 card.className = 'song-card';
                 card.dataset.songId = song.id;
@@ -175,6 +172,10 @@
                     <div class="song-info">
                         <div class="song-name">${song.name}</div>
                         <div class="song-artist">${song.artist}</div>
+                    </div>
+                    <div class="song-score-badge" style="margin-left: auto; text-align: right; padding-right: 12px; font-family: 'Segoe UI', sans-serif;">
+                        <div style="font-size: 0.65rem; color: rgba(255,255,255,0.5); font-weight: 600; letter-spacing: 0.5px;">HI-SCORE</div>
+                        <div style="font-size: 0.85rem; color: #00e5ff; font-weight: 800;">${highScore > 0 ? highScore.toLocaleString() : '---'}</div>
                     </div>
                 `;
                 card.addEventListener('click', () => {
@@ -203,7 +204,7 @@
             if (!this.songDetailEl) return;
             if (!this.currentSong) {
                 this.songDetailEl.classList.remove('has-song');
-                this.songDetailEl.innerHTML = `<div class="no-song-placeholder" style="color: rgba(255,255,255,0.5); padding: 30px 0;">请先选择歌曲</div>`;
+                this.songDetailEl.innerHTML = `<div class="no-song-placeholder" style="color: rgba(255,255,255,0.5); padding: 30px 0;">please select a song</div>`;
                 return;
             }
             const song = this.currentSong;
@@ -266,10 +267,10 @@
             this.pauseBtn.addEventListener('click', () => this.togglePause());
             this.resumeBtn.addEventListener('click', () => this.togglePause());
             this.restartInGameBtn.addEventListener('click', () => { this.togglePause(); this.sound.playStart(); this.startGame(); });
-            this.homeBtn.addEventListener('click', () => this.goHome());
+            this.homeBtn.addEventListener('click', () => { this.goHome(); this.renderSongList(); });
 
             const resultHomeBtn = document.getElementById('result-home-btn');
-            if (resultHomeBtn) resultHomeBtn.addEventListener('click', () => this.goHome());
+            if (resultHomeBtn) resultHomeBtn.addEventListener('click', () => { this.goHome(); this.renderSongList(); });
 
             this.audio.addEventListener('ended', () => {
                 if (this.isPlaying && !this.isEnded) this.endGame();
@@ -450,7 +451,7 @@
 
         handleJudge(judge, x) {
             if (judge !== 'miss') {
-                this.sound.playHit(); // 只有打击成功时才触发清脆的音效
+                this.sound.playHit();
             }
             if (judge === 'miss') {
                 this.combo = 0;
@@ -491,9 +492,12 @@
             const accuracy = totalNotes > 0 ? Math.round(((this.stats.perfect * 1 + this.stats.great * 0.8 + this.stats.good * 0.5) / totalNotes) * 100) : 0;
             let rank = accuracy >= 95 ? 'S' : accuracy >= 85 ? 'A' : accuracy >= 75 ? 'B' : accuracy >= 60 ? 'C' : 'D';
 
+            // 本地存储最高分逻辑
             const storageKey = `high_score_${this.currentSong ? this.currentSong.id : 'default'}_${this.selectedMode}`;
             const previousBest = parseInt(localStorage.getItem(storageKey) || '0', 10);
-            if (this.score > previousBest) localStorage.setItem(storageKey, this.score.toString());
+            if (this.score > previousBest) {
+                localStorage.setItem(storageKey, this.score.toString());
+            }
             const currentBest = Math.max(this.score, previousBest);
 
             document.getElementById('grade-display').textContent = rank;
@@ -729,5 +733,12 @@
         }
     }
 
-    window.addEventListener('load', () => { window._game = new Game(); });
+    window.addEventListener('load', () => {
+        window._game = new Game();
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => console.log('PWA Service Worker 注册成功'))
+                .catch((err) => console.log('PWA 注册失败:', err));
+        }
+    });
 })();
