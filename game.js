@@ -432,8 +432,10 @@
             this.canvas.height = window.innerHeight;
             this.width = this.canvas.width;
             this.height = this.canvas.height;
+
             const isMobile = this.width < 768;
-            this.trackAreaWidth = isMobile ? this.width * 0.98 : this.width * this.CONFIG.TRACK_WIDTH_RATIO;
+            // 关键：像 BabyMonster 一样，在手机端限制为 98% 宽度，PC端限制一个舒适的比例
+            this.trackAreaWidth = isMobile ? this.width * 0.98 : Math.min(this.width * 0.5, 500);
             this.trackAreaLeft = (this.width - this.trackAreaWidth) / 2;
             this.trackWidth = this.trackAreaWidth / this.CONFIG.TRACK_COUNT;
             this.judgeLineY = this.height * this.CONFIG.JUDGE_LINE_Y_RATIO;
@@ -1056,12 +1058,11 @@
             for (const note of this.notes) {
                 if (note.completed && !note.isHolding) continue;
                 const colorConfig = TRACK_COLORS[note.track];
-                // 严格锁定当前轨道的中心点
                 const trackX = this.trackAreaLeft + note.track * this.trackWidth;
                 const centerX = trackX + this.trackWidth / 2;
 
-                // 将音符宽度设为轨道宽度的 75% 左右，留出间距，绝对不会“变宽串轨”
-                const noteW = this.trackWidth * 0.75;
+                // 关键：采用 BabyMonster 的 0.82 比例，音符两边会自然留出空隙，绝不串轨
+                const noteW = this.trackWidth * 0.82;
                 const noteH = 16;
                 const startY = this.judgeLineY - (note.time - this.gameTime) * (this.CONFIG.NOTE_SPEED / 1000);
 

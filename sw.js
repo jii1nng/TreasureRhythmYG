@@ -38,10 +38,25 @@ const urlsToCache = [
     './photocards/asahi_6.jpg', './photocards/asahi_7.jpg', './photocards/asahi_8.jpg', './photocards/asahi_9.jpg', './photocards/asahi_10.jpg',
     './photocards/yoshi_1.jpg', './photocards/yoshi_2.jpg', './photocards/yoshi_3.jpg', './photocards/yoshi_4.jpg', './photocards/yoshi_5.jpg',
     './photocards/yoshi_6.jpg', './photocards/yoshi_7.jpg', './photocards/yoshi_8.jpg', './photocards/yoshi_9.jpg', './photocards/yoshi_10.jpg',
+    './photocards/junkyu_1.jpg', './photocards/junkyu_2.jpg', './photocards/junkyu_3.jpg', './photocards/junkyu_4.jpg', './photocards/junkyu_5.jpg',
+    './photocards/junkyu_6.jpg', './photocards/junkyu_7.jpg', './photocards/junkyu_8.jpg', './photocards/junkyu_9.jpg', './photocards/junkyu_10.jpg',
+    './photocards/jeongwoo_1.jpg', './photocards/jeongwoo_2.jpg', './photocards/jeongwoo_3.jpg', './photocards/jeongwoo_4.jpg', './photocards/jeongwoo_5.jpg',
+    './photocards/jeongwoo_6.jpg', './photocards/jeongwoo_7.jpg', './photocards/jeongwoo_8.jpg', './photocards/jeongwoo_9.jpg', './photocards/jeongwoo_10.jpg',
+    './photocards/hyunsuk_1.jpg', './photocards/hyunsuk_2.jpg', './photocards/hyunsuk_3.jpg', './photocards/hyunsuk_4.jpg', './photocards/hyunsuk_5.jpg',
+    './photocards/hyunsuk_6.jpg', './photocards/hyunsuk_7.jpg', './photocards/hyunsuk_8.jpg', './photocards/hyunsuk_9.jpg', './photocards/hyunsuk_10.jpg',
+    './photocards/haruto_1.jpg', './photocards/haruto_2.jpg', './photocards/haruto_3.jpg', './photocards/haruto_4.jpg', './photocards/haruto_5.jpg',
+    './photocards/haruto_6.jpg', './photocards/haruto_7.jpg', './photocards/haruto_8.jpg', './photocards/haruto_9.jpg', './photocards/haruto_10.jpg',
+    './photocards/junghwan_1.jpg', './photocards/junghwan_2.jpg', './photocards/junghwan_3.jpg', './photocards/junghwan_4.jpg', './photocards/junghwan_5.jpg',
+    './photocards/junghwan_6.jpg', './photocards/junghwan_7.jpg', './photocards/junghwan_8.jpg', './photocards/junghwan_9.jpg', './photocards/junghwan_10.jpg',
+    './photocards/jaehyuk_1.jpg', './photocards/jaehyuk_2.jpg', './photocards/jaehyuk_3.jpg', './photocards/jaehyuk_4.jpg', './photocards/jaehyuk_5.jpg',
+    './photocards/jaehyuk_6.jpg', './photocards/jaehyuk_7.jpg', './photocards/jaehyuk_8.jpg', './photocards/jaehyuk_9.jpg', './photocards/jaehyuk_10.jpg',
+    './photocards/jihoon_1.jpg', './photocards/jihoon_2.jpg', './photocards/jihoon_3.jpg', './photocards/jihoon_4.jpg', './photocards/jihoon_5.jpg',
+    './photocards/jihoon_6.jpg', './photocards/jihoon_7.jpg', './photocards/jihoon_8.jpg', './photocards/jihoon_9.jpg', './photocards/jihoon_10.jpg',
+
     './photocards/duo_1.jpg', './photocards/duo_2.jpg', './photocards/duo_3.jpg', './photocards/duo_4.jpg',
     './photocards/duo_5.jpg', './photocards/duo_6.jpg', './photocards/duo_7.jpg', './photocards/duo_8.jpg', './photocards/duo_9.jpg', './photocards/duo_10.jpg',
     './photocards/duo_11.jpg', './photocards/duo_12.jpg', './photocards/duo_13.jpg', './photocards/duo_14.jpg', './photocards/duo_15.jpg', './photocards/duo_16.jpg',
-    './photocards/duo_17.jpg', './photocards/duo_18.jpg', './photocards/duo_19.jpg', './photocards/duo_20.jpg'
+    './photocards/duo_17.jpg', './photocards/duo_18.jpg', './photocards/duo_19.jpg', './photocards/duo_20.jpg', './photocards/duo_21.jpg', './photocards/duo_22.jpg', './photocards/duo_23.jpg',
 ];
 
 self.addEventListener('install', (event) => {
