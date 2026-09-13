@@ -1,34 +1,21 @@
-// game.js - Version 2026.09.13
+// game.js - Version 2026.09.13-BabyMonster
 (function () {
     'use strict';
 
     const SONG_LIST = [
-        { id: 'iloveyou', name: 'I LOVE YOU', artist: 'TREASURE', cover: '💎', coverBg: 'linear-gradient(135deg, #00aaff, #0066ff)', coverImg: './covers/iloveyou_small.jpg', detailImg: './covers/iloveyou_big.jpg', video: './songs/iloveyou.mp4', audio: './songs/iloveyou.mp3' },
-        { id: 'bona_bona', name: 'BONA BONA', artist: 'TREASURE', cover: '🔥', coverBg: 'linear-gradient(135deg, #ff4466, #cc0033)', coverImg: './covers/bona_bona_small.jpg', detailImg: './covers/bona_bona_big.jpg', video: './songs/bona_bona.mp4', audio: './songs/bona_bona.mp3' },
-        { id: 'boy', name: 'BOY', artist: 'TREASURE', cover: '💙', coverBg: 'linear-gradient(135deg, #0055ff, #0022aa)', coverImg: './covers/boy_small.jpg', detailImg: './covers/boy_big.jpg', video: './songs/boy.mp4', audio: './songs/boy.mp3' },
-        { id: 'darari', name: 'DARARI', artist: 'TREASURE', cover: '🎶', coverBg: 'linear-gradient(135deg, #ffaa00, #ff4400)', coverImg: './covers/darari_small.jpg', detailImg: './covers/darari_big.jpg', video: './songs/darari.mp4', audio: './songs/darari.mp3' },
-        { id: 'jikjin', name: 'JIKJIN', artist: 'TREASURE', cover: '⚡', coverBg: 'linear-gradient(135deg, #00e5ff, #0088cc)', coverImg: './covers/jikjin_small.jpg', detailImg: './covers/jikjin_big.jpg', video: './songs/jikjin.mp4', audio: './songs/jikjin.mp3' },
-        { id: 'hello', name: 'HELLO', artist: 'TREASURE', cover: '✨', coverBg: 'linear-gradient(135deg, #7700ff, #aa00ff)', coverImg: './covers/hello_small.jpg', detailImg: './covers/hello_big.jpg', video: './songs/hello.mp4', audio: './songs/hello.mp3' },
-        { id: 'mmm', name: 'MMM', artist: 'TREASURE', cover: '🖤', coverBg: 'linear-gradient(135deg, #333333, #000000)', coverImg: './covers/mmm_small.jpg', detailImg: './covers/mmm_big.jpg', video: './songs/mmm.mp4', audio: './songs/mmm.mp3' },
-        { id: 'my_treasure', name: 'MY TREASURE', artist: 'TREASURE', cover: '☀️', coverBg: 'linear-gradient(135deg, #ffea00, #ff9900)', coverImg: './covers/my_treasure_small.jpg', detailImg: './covers/my_treasure_big.jpg', video: './songs/my_treasure.mp4', audio: './songs/my_treasure.mp3' },
-        { id: 'king_kong', name: 'KING KONG', artist: 'TREASURE', cover: '🦍', coverBg: 'linear-gradient(135deg, #ff2200, #880000)', coverImg: './covers/king_kong_small.jpg', detailImg: './covers/king_kong_big.jpg', video: './songs/king_kong.mp4', audio: './songs/king_kong.mp3' },
-        { id: 'b_o_m_b', name: 'B.O.M.B', artist: 'TREASURE', cover: '💣', coverBg: 'linear-gradient(135deg, #ff00aa, #aa0055)', coverImg: './covers/bomb_small.jpg', detailImg: './covers/bomb_big.jpg', video: './songs/bomb.mp4', audio: './songs/bomb.mp3' },
-        { id: 'oranje', name: 'ORANGE', artist: 'TREASURE', cover: '🍊', coverBg: 'linear-gradient(135deg, #ff7700, #cc4400)', coverImg: './covers/orange_small.jpg', detailImg: './covers/orange_big.jpg', video: './songs/orange.mp4', audio: './songs/orange.mp3' },
-        { id: 'going_crazy', name: 'GOING CRAZY', artist: 'TREASURE', cover: '🌀', coverBg: 'linear-gradient(135deg, #00ffcc, #009977)', coverImg: './covers/going_crazy_small.jpg', detailImg: './covers/going_crazy_big.jpg', video: './songs/going_crazy.mp4', audio: './songs/going_crazy.mp3' },
-        { id: 'wonderland', name: 'WONDERLAND', artist: 'TREASURE', cover: '🌌', coverBg: 'linear-gradient(135deg, #4400ff, #220088)', coverImg: './covers/wonderland_small.jpg', detailImg: './covers/wonderland_big.jpg', video: './songs/wonderland.mp4', audio: './songs/wonderland.mp3' },
-        { id: 'run', name: 'RUN', artist: 'TREASURE', cover: '🏃', coverBg: 'linear-gradient(135deg, #00ff66, #00aa33)', coverImg: './covers/run_small.jpg', detailImg: './covers/run_big.jpg', video: './songs/run.mp4', audio: './songs/run.mp3' },
-        { id: 'g_o_a_t', name: 'G.O.A.T', artist: 'TREASURE', cover: '🐐', coverBg: 'linear-gradient(135deg, #bbbbbb, #555555)', coverImg: './covers/goat_small.jpg', detailImg: './covers/goat_big.jpg', video: './songs/goat.mp4', audio: './songs/goat.mp3' },
-        { id: 'volcano', name: 'VOLKANO', artist: 'TREASURE', cover: '🌋', coverBg: 'linear-gradient(135deg, #ff3300, #991100)', coverImg: './covers/volkano_small.jpg', detailImg: './covers/volkano_big.jpg', video: './songs/volkano.mp4', audio: './songs/volkano.mp3' },
-        { id: 'thank_you', name: 'THANK YOU', artist: 'TREASURE', cover: '💌', coverBg: 'linear-gradient(135deg, #ff6699, #ff3366)', coverImg: './covers/thank_you_small.jpg', detailImg: './covers/thank_you_big.jpg', video: './songs/thank_you.mp4', audio: './songs/thank_you.mp3' },
-        { id: 'hold_it_in', name: 'HOLD IT IN', artist: 'TREASURE', cover: '🛡️', coverBg: 'linear-gradient(135deg, #0099ff, #0044aa)', coverImg: './covers/hold_it_in_small.jpg', detailImg: './covers/hold_it_in_big.jpg', video: './songs/hold_it_in.mp4', audio: './songs/hold_it_in.mp3' },
-        { id: 'move', name: 'MOVE (T5)', artist: 'TREASURE', cover: '💃', coverBg: 'linear-gradient(135deg, #9900ff, #5500aa)', coverImg: './covers/move_small.jpg', detailImg: './covers/move_big.jpg', video: './songs/move.mp4', audio: './songs/move.mp3' },
-        { id: 'here_i_stand', name: 'HERE I STAND', artist: 'TREASURE', cover: '🎤', coverBg: 'linear-gradient(135deg, #00e5ff, #0055ff)', coverImg: './covers/here_i_stand_small.jpg', detailImg: './covers/here_i_stand_big.jpg', video: './songs/here_i_stand.mp4', audio: './songs/here_i_stand.mp3' }
+        { id: 'sheesh', name: 'SHEESH', artist: 'BABYMONSTER', cover: '💥', coverBg: 'linear-gradient(135deg, #ff0055, #6600cc)', coverImg: './covers/sheesh_small.jpg', detailImg: './covers/sheesh_big.jpg', video: './songs/sheesh.mp4', audio: './songs/sheesh.mp3' },
+        { id: 'batter_up', name: 'BATTER UP', artist: 'BABYMONSTER', cover: '⚾', coverBg: 'linear-gradient(135deg, #0055ff, #00e5ff)', coverImg: './covers/batter_up_small.jpg', detailImg: './covers/batter_up_big.jpg', video: './songs/batter_up.mp4', audio: './songs/batter_up.mp3' },
+        { id: 'stuck_in_the_middle', name: 'STUCK IN THE MIDDLE', artist: 'BABYMONSTER', cover: '💫', coverBg: 'linear-gradient(135deg, #ffaa00, #ff2266)', coverImg: './covers/stuck_small.jpg', detailImg: './covers/stuck_big.jpg', video: './songs/stuck.mp4', audio: './songs/stuck.mp3' },
+        { id: 'forever', name: 'FOREVER', artist: 'BABYMONSTER', cover: '👑', coverBg: 'linear-gradient(135deg, #00ffcc, #0066ff)', coverImg: './covers/forever_small.jpg', detailImg: './covers/forever_big.jpg', video: './songs/forever.mp4', audio: './songs/forever.mp3' },
+        { id: 'like_that', name: 'LIKE THAT', artist: 'BABYMONSTER', cover: '🔥', coverBg: 'linear-gradient(135deg, #ff2200, #880000)', coverImg: './covers/like_that_small.jpg', detailImg: './covers/like_that_big.jpg', video: './songs/like_that.mp4', audio: './songs/like_that.mp3' },
+        { id: 'click_clack', name: 'CLICK CLACK', artist: 'BABYMONSTER', cover: '🎤', coverBg: 'linear-gradient(135deg, #333333, #000000)', coverImg: './covers/click_clack_small.jpg', detailImg: './covers/click_clack_big.jpg', video: './songs/click_clack.mp4', audio: './songs/click_clack.mp3' },
+        { id: 'drip', name: 'DRIP', artist: 'BABYMONSTER', cover: '💧', coverBg: 'linear-gradient(135deg, #0099ff, #0022aa)', coverImg: './covers/drip_small.jpg', detailImg: './covers/drip_big.jpg', video: './songs/drip.mp4', audio: './songs/drip.mp3' }
     ];
 
     const CONFIG_BASE = {
         TRACK_COUNT: 4,
         NOTE_SPEED: 340,
-        JUDGE_LINE_Y_RATIO: 0.78,
+        JUDGE_LINE_Y_RATIO: 0.82,
         TRACK_WIDTH_RATIO: 0.5,
         PERFECT_WINDOW: 60,
         GREAT_WINDOW: 120,
@@ -58,38 +45,42 @@
             if (!this.ctx) return;
             const osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(600, this.ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.08);
-            gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+            osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.05);
+            gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
             osc.connect(gain); gain.connect(this.ctx.destination);
-            osc.start(); osc.stop(this.ctx.currentTime + 0.08);
+            osc.start(); osc.stop(this.ctx.currentTime + 0.05);
         }
         playStart() {
             this.init();
             if (!this.ctx) return;
             const now = this.ctx.currentTime;
-            [440, 554.37, 659.25, 880].forEach((freq, idx) => {
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
                 const osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-                gain.gain.setValueAtTime(0.2, now + idx * 0.08);
-                gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.08 + 0.2);
+                osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+                gain.gain.setValueAtTime(0.08, now + idx * 0.06);
+                gain.gain.linearRampToValueAtTime(0.001, now + idx * 0.06 + 0.15);
                 osc.connect(gain); gain.connect(this.ctx.destination);
-                osc.start(now + idx * 0.08); osc.stop(now + idx * 0.08 + 0.2);
+                osc.start(now + idx * 0.06); osc.stop(now + idx * 0.06 + 0.15);
             });
         }
         playHit() {
             this.init();
             if (!this.ctx) return;
-            const osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(300, this.ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(120, this.ctx.currentTime + 0.05);
-            gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
-            osc.connect(gain); gain.connect(this.ctx.destination);
-            osc.start(); osc.stop(this.ctx.currentTime + 0.05);
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1046.50, now);
+            osc.frequency.exponentialRampToValueAtTime(523.25, now + 0.04);
+            gain.gain.setValueAtTime(0.03, now);
+            gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.04);
         }
     }
 
@@ -264,36 +255,36 @@
         }
 
         setupTouchControls() {
-            const touchKeysEl = document.getElementById('touch-keys');
-            if (!touchKeysEl) return;
-            touchKeysEl.innerHTML = '';
-            for (let i = 0; i < 4; i++) {
-                const btn = document.createElement('div');
-                btn.className = 'touch-key';
-                btn.dataset.track = i;
-                btn.innerHTML = `<span>${KEY_MAP[i].toUpperCase()}</span>`;
+            const handleTouchInput = (clientX) => {
+                if (!this.isPlaying || this.isPaused) return;
+                const relativeX = clientX - this.trackAreaLeft;
+                if (relativeX >= 0 && relativeX <= this.trackAreaWidth) {
+                    const trackIdx = Math.floor(relativeX / this.trackWidth);
+                    if (trackIdx >= 0 && trackIdx < 4) return trackIdx;
+                }
+                return -1;
+            };
 
-                const pressOn = (e) => {
-                    e.preventDefault();
-                    if (!this.trackPressState[i]) {
-                        this.pressTrack(i);
-                        btn.classList.add('active');
-                    }
-                };
-                const pressOff = (e) => {
-                    e.preventDefault();
-                    this.releaseTrack(i);
-                    btn.classList.remove('active');
-                };
+            this.canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    const idx = handleTouchInput(e.changedTouches[i].clientX);
+                    if (idx !== -1 && !this.trackPressState[idx]) this.pressTrack(idx);
+                }
+            }, { passive: false });
 
-                btn.addEventListener('touchstart', pressOn, { passive: false });
-                btn.addEventListener('touchend', pressOff, { passive: false });
-                btn.addEventListener('touchcancel', pressOff, { passive: false });
-                btn.addEventListener('mousedown', pressOn);
-                btn.addEventListener('mouseup', pressOff);
-                btn.addEventListener('mouseleave', pressOff);
-                touchKeysEl.appendChild(btn);
-            }
+            this.canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                for (let i = 0; i < 4; i++) this.releaseTrack(i);
+            }, { passive: false });
+
+            this.canvas.addEventListener('mousedown', (e) => {
+                const idx = handleTouchInput(e.clientX);
+                if (idx !== -1) this.pressTrack(idx);
+            });
+            this.canvas.addEventListener('mouseup', (e) => {
+                for (let i = 0; i < 4; i++) this.releaseTrack(i);
+            });
         }
 
         togglePause() {
@@ -321,8 +312,6 @@
             this.pauseOverlay.classList.add('hidden');
             this.endScreen.classList.add('hidden');
             this.gameUiEl.classList.add('hidden');
-            const touchKeysEl = document.getElementById('touch-keys');
-            if (touchKeysEl) touchKeysEl.classList.remove('active');
             this.startScreen.style.display = 'flex';
         }
 
@@ -359,9 +348,6 @@
             this.endScreen.classList.add('hidden');
             this.pauseOverlay.classList.add('hidden');
             this.gameUiEl.classList.remove('hidden');
-
-            const touchKeysEl = document.getElementById('touch-keys');
-            if (touchKeysEl) touchKeysEl.classList.add('active');
 
             this.isPlaying = true;
             this.isPaused = false;
@@ -441,7 +427,9 @@
         }
 
         handleJudge(judge, x) {
-            this.sound.playHit();
+            if (judge !== 'miss') {
+                this.sound.playHit();
+            }
             if (judge === 'miss') {
                 this.combo = 0;
                 this.stats.miss++;
@@ -472,8 +460,6 @@
             try { this.audio.pause(); } catch (e) { }
             try { this.video.pause(); } catch (e) { }
             this.gameUiEl.classList.add('hidden');
-            const touchKeysEl = document.getElementById('touch-keys');
-            if (touchKeysEl) touchKeysEl.classList.remove('active');
             this.updateResultScreen();
             if (this.endScreen) this.endScreen.classList.remove('hidden');
         }
@@ -538,8 +524,8 @@
             this.drawJudgeLine();
             this.drawHitEffects();
             this.drawFloatingTexts();
-            this.drawTopProgressBar(); // 进度条在最上方（UI 顶栏下方、判定线上方）
-            this.drawCenterHUD();    // Combo 在判定线上方
+            this.drawTopProgressBar();
+            this.drawCenterHUD();
         }
 
         drawBackgroundReactive() {
@@ -573,7 +559,6 @@
             }
         }
 
-        // 强力高显进度条：固定在屏幕上方偏下一点点，紧贴轨道区上方
         drawTopProgressBar() {
             const duration = (this.audio && !isNaN(this.audio.duration) && this.audio.duration > 0) ? this.audio.duration * 1000 : 120000;
             const progress = Math.min(1, Math.max(0, this.gameTime / duration));
@@ -581,7 +566,7 @@
             const barW = Math.min(280, this.trackAreaWidth * 0.85);
             const barH = 6;
             const barX = this.trackAreaLeft + (this.trackAreaWidth - barW) / 2;
-            const barY = 40; // 离顶端 40px，在任何设备上都非常醒目
+            const barY = 40;
 
             this.ctx.save();
             this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';

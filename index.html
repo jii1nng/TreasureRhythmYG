@@ -4,110 +4,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPERSTAR TREASURE</title>
+    <title>BABYMONSTER - RHYTHM BEAT</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div id="game-container">
-        <!-- 背景视频与音频 -->
+        <!-- 视频背景 -->
         <video id="bg-video" loop muted playsinline></video>
-        <audio id="bg-music"></audio>
+        <audio id="bg-music" preload="auto"></audio>
 
         <!-- 游戏画布 -->
         <canvas id="game-canvas"></canvas>
 
-        <!-- 游戏内 UI 顶部区域 -->
-        <div id="game-ui" class="game-ui">
-            <button id="pause-btn" class="ui-pause-btn">⏸ PAUSE</button>
-            <div class="score-board">
-                <span class="score-label">SCORE</span>
-                <span id="score-value">0</span>
+        <!-- 首页选择界面 -->
+        <div id="start-screen" class="screen">
+            <div class="header-banner">
+                <h1>BABYMONSTER</h1>
+                <p>RHYTHM BEAT STAGE</p>
+            </div>
+            <div class="main-content-layout">
+                <div class="song-list-container">
+                    <h3>SELECT TRACK</h3>
+                    <div id="song-list"></div>
+                </div>
+                <div class="song-detail-container" id="song-detail">
+                    <!-- 动态渲染歌曲详情与难度选择 -->
+                </div>
+            </div>
+            <div class="footer-action">
+                <button id="start-btn" class="cyber-btn" disabled>
+                    <span class="btn-text">▶ START GAME</span>
+                </button>
             </div>
         </div>
 
-        <!-- 手机端屏幕底部虚拟按键区 -->
-        <div id="touch-keys" class="touch-keys-container"></div>
-
-        <!-- 暂停弹窗 -->
-        <div id="pause-overlay" class="overlay hidden">
-            <div class="pause-card">
-                <h2>PAUSED</h2>
-                <div class="pause-actions">
-                    <button id="resume-btn" class="btn primary">RESUME</button>
-                    <button id="restart-in-game-btn" class="btn secondary">RESTART</button>
-                    <button id="home-btn" class="btn danger">HOME</button>
-                </div>
+        <!-- 游戏中的 UI -->
+        <div id="game-ui" class="hidden">
+            <div id="hud-top">
+                <div id="score-board">SCORE: <span id="score-value">0</span></div>
+                <button id="pause-btn" class="icon-btn">⏸</button>
             </div>
         </div>
 
-        <!-- 开始/单排选歌界面 -->
-        <div id="start-screen" class="overlay">
-            <h1 class="logo">SUPERSTAR<br><span>TREASURE</span></h1>
-
-            <div class="song-selection-container">
-                <div id="song-list" class="song-list"></div>
-                <div id="song-detail" class="song-detail">
-                    <div class="no-song-placeholder">请先选择歌曲</div>
+        <!-- 暂停遮罩 -->
+        <div id="pause-overlay" class="screen overlay hidden">
+            <div class="menu-box">
+                <h2>GAME PAUSED</h2>
+                <div class="menu-buttons">
+                    <button id="resume-btn" class="cyber-btn">RESUME</button>
+                    <button id="restart-in-game-btn" class="cyber-btn">RETRY</button>
+                    <button id="home-btn" class="cyber-btn secondary">QUIT</button>
                 </div>
             </div>
-
-            <button id="start-btn" class="btn primary-lg" disabled>请先选择歌曲</button>
         </div>
 
         <!-- 结算界面 -->
-        <div id="end-screen" class="overlay hidden">
-            <div class="result-card">
-                <span class="subtitle">RESULT</span>
-                <h1 id="grade-display" class="rank">S</h1>
-                <div class="total-score-box">
-                    <span class="label">TOTAL SCORE</span>
-                    <h2 id="final-score-value" class="total-score">0</h2>
+        <div id="end-screen" class="screen overlay hidden">
+            <div class="menu-box result-box">
+                <div class="grade-badge" id="grade-display">S</div>
+                <h2>STAGE CLEAR</h2>
+                <div class="result-stats">
+                    <div class="stat-row"><span>SCORE</span><span id="final-score-value">0</span></div>
+                    <div class="stat-row"><span>BEST SCORE</span><span id="best-score">0</span></div>
+                    <div class="stat-grid">
+                        <div class="stat-item perfect">PERFECT: <span id="stat-perfect">0</span></div>
+                        <div class="stat-item great">GREAT: <span id="stat-great">0</span></div>
+                        <div class="stat-item good">GOOD: <span id="stat-good">0</span></div>
+                        <div class="stat-item miss">MISS: <span id="stat-miss">0</span></div>
+                    </div>
+                    <div class="stat-row"><span>MAX COMBO</span><span id="stat-maxcombo">0</span></div>
+                    <div class="stat-row"><span>ACCURACY</span><span id="stat-accuracy">0%</span></div>
                 </div>
-
-                <div class="high-score-box">
-                    <span>BEST SCORE: <strong id="best-score">0</strong></span>
-                </div>
-
-                <!-- 四项判定数据 -->
-                <div class="stats-grid">
-                    <div class="stat-item perfect">
-                        <span id="stat-perfect" class="num">0</span>
-                        <span class="txt">PERFECT</span>
-                    </div>
-                    <div class="stat-item great">
-                        <span id="stat-great" class="num">0</span>
-                        <span class="txt">GREAT</span>
-                    </div>
-                    <div class="stat-item good">
-                        <span id="stat-good" class="num">0</span>
-                        <span class="txt">GOOD</span>
-                    </div>
-                    <div class="stat-item miss">
-                        <span id="stat-miss" class="num">0</span>
-                        <span class="txt">MISS</span>
-                    </div>
-                </div>
-
-                <div class="sub-stats">
-                    <div class="sub-item">
-                        <span class="sub-label">MAX COMBO</span>
-                        <span id="stat-maxcombo" class="sub-value">0</span>
-                    </div>
-                    <div class="sub-item">
-                        <span class="sub-label">ACCURACY</span>
-                        <span id="stat-accuracy" class="sub-value">0%</span>
-                    </div>
-                </div>
-
-                <div class="result-actions">
-                    <button id="retry-btn" class="btn primary">PLAY AGAIN</button>
-                    <button id="result-home-btn" class="btn secondary">HOME</button>
+                <div class="menu-buttons">
+                    <button id="retry-btn" class="cyber-btn">PLAY AGAIN</button>
+                    <button id="result-home-btn" class="cyber-btn secondary">CHOOSE SONG</button>
                 </div>
             </div>
         </div>
     </div>
-
     <script src="game.js"></script>
 </body>
 
