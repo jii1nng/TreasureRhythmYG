@@ -1,6 +1,27 @@
-// game.js - Version 2026.09.13-PhotocardWithGemsAndSSSGlow
 (function () {
-    'use strict';
+    'use strict'; const SUPABASE_URL = 'https://khjzhoiltfujezxlddfs.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_G0ym78XaN3eeOry4BlyWww_JTaq6JP9'; // 换成你的 Key
+
+    let supabaseClient = null;
+    if (window.supabase) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } else {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.onload = () => {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        };
+        document.head.appendChild(script);
+    }
+
+    function getPlayerName() {
+        let name = localStorage.getItem('player_id_name');
+        if (!name) {
+            name = 'TREASURE_Maker_' + Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem('player_id_name', name);
+        }
+        return name;
+    }
 
     const SONG_LIST = [
         { id: 'iloveyou', name: 'I LOVE YOU', artist: 'TREASURE', cover: '💎', coverBg: 'linear-gradient(135deg, #00aaff, #0066ff)', coverImg: './covers/iloveyou_small.jpg', detailImg: './covers/iloveyou_big.jpg', video: './songs/iloveyou.mp4', audio: './songs/iloveyou.mp3' },
@@ -28,7 +49,7 @@
     ];
 
     const PHOTO_CARDS = [
-        // Hyunsuk (8 cards)[cite: 3]
+        // Hyunsuk (10 cards)[cite: 3]
         { id: 'hyunsuk_1', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_1.jpg', rarity: 'R' },
         { id: 'hyunsuk_2', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_2.jpg', rarity: 'R' },
         { id: 'hyunsuk_3', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_3.jpg', rarity: 'SR' },
@@ -37,8 +58,12 @@
         { id: 'hyunsuk_6', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_6.jpg', rarity: 'SSR' },
         { id: 'hyunsuk_7', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_7.jpg', rarity: 'UR' },
         { id: 'hyunsuk_8', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_8.jpg', rarity: 'UR' },
+        { id: 'hyunsuk_9', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_9.jpg', rarity: 'UR' },
+        { id: 'hyunsuk_10', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_10.jpg', rarity: 'UR' },
 
-        // Jihoon (8 cards)[cite: 3]
+
+
+        // Jihoon (10 cards)[cite: 3]
         { id: 'jihoon_1', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_1.jpg', rarity: 'R' },
         { id: 'jihoon_2', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_2.jpg', rarity: 'R' },
         { id: 'jihoon_3', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_3.jpg', rarity: 'SR' },
@@ -47,8 +72,11 @@
         { id: 'jihoon_6', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_6.jpg', rarity: 'SSR' },
         { id: 'jihoon_7', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_7.jpg', rarity: 'UR' },
         { id: 'jihoon_8', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_8.jpg', rarity: 'UR' },
+        { id: 'jihoon_9', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_9.jpg', rarity: 'UR' },
+        { id: 'jihoon_10', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_10.jpg', rarity: 'UR' },
 
-        // Yoshi (8 cards)[cite: 3]
+
+        // Yoshi (10 cards)[cite: 3]
         { id: 'yoshi_1', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_1.jpg', rarity: 'R' },
         { id: 'yoshi_2', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_2.jpg', rarity: 'R' },
         { id: 'yoshi_3', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_3.jpg', rarity: 'SR' },
@@ -57,8 +85,12 @@
         { id: 'yoshi_6', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_6.jpg', rarity: 'SSR' },
         { id: 'yoshi_7', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_7.jpg', rarity: 'UR' },
         { id: 'yoshi_8', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_8.jpg', rarity: 'UR' },
+        { id: 'yoshi_9', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_9.jpg', rarity: 'UR' },
+        { id: 'yoshi_10', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_10.jpg', rarity: 'UR' },
 
-        // Junkyu (8 cards)[cite: 3]
+
+
+        // Junkyu (10 cards)[cite: 3]
         { id: 'junkyu_1', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_1.jpg', rarity: 'R' },
         { id: 'junkyu_2', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_2.jpg', rarity: 'R' },
         { id: 'junkyu_3', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_3.jpg', rarity: 'SR' },
@@ -67,8 +99,12 @@
         { id: 'junkyu_6', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_6.jpg', rarity: 'SSR' },
         { id: 'junkyu_7', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_7.jpg', rarity: 'UR' },
         { id: 'junkyu_8', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_8.jpg', rarity: 'UR' },
+        { id: 'junkyu_9', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_9.jpg', rarity: 'UR' },
+        { id: 'junkyu_10', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_10.jpg', rarity: 'UR' },
 
-        // Jaehyuk (8 cards)[cite: 3]
+
+
+        // Jaehyuk (10 cards)[cite: 3]
         { id: 'jaehyuk_1', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_1.jpg', rarity: 'R' },
         { id: 'jaehyuk_2', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_2.jpg', rarity: 'R' },
         { id: 'jaehyuk_3', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_3.jpg', rarity: 'SR' },
@@ -77,8 +113,10 @@
         { id: 'jaehyuk_6', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_6.jpg', rarity: 'SSR' },
         { id: 'jaehyuk_7', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_7.jpg', rarity: 'UR' },
         { id: 'jaehyuk_8', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_8.jpg', rarity: 'UR' },
+        { id: 'jaehyuk_9', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_9.jpg', rarity: 'UR' },
+        { id: 'jaehyuk_10', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_10.jpg', rarity: 'UR' },
 
-        // Asahi (8 cards)[cite: 3]
+        // Asahi (10 cards)[cite: 3]
         { id: 'asahi_1', name: 'Asahi', group: 'asahi', img: './photocards/asahi_1.jpg', rarity: 'R' },
         { id: 'asahi_2', name: 'Asahi', group: 'asahi', img: './photocards/asahi_2.jpg', rarity: 'R' },
         { id: 'asahi_3', name: 'Asahi', group: 'asahi', img: './photocards/asahi_3.jpg', rarity: 'SR' },
@@ -87,8 +125,11 @@
         { id: 'asahi_6', name: 'Asahi', group: 'asahi', img: './photocards/asahi_6.jpg', rarity: 'SSR' },
         { id: 'asahi_7', name: 'Asahi', group: 'asahi', img: './photocards/asahi_7.jpg', rarity: 'UR' },
         { id: 'asahi_8', name: 'Asahi', group: 'asahi', img: './photocards/asahi_8.jpg', rarity: 'UR' },
+        { id: 'asahi_9', name: 'Asahi', group: 'asahi', img: './photocards/asahi_9.jpg', rarity: 'UR' },
+        { id: 'asahi_10', name: 'Asahi', group: 'asahi', img: './photocards/asahi_10.jpg', rarity: 'UR' },
 
-        // Doyoung (8 cards)[cite: 3]
+
+        // Doyoung (10 cards)[cite: 3]
         { id: 'doyoung_1', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_1.jpg', rarity: 'R' },
         { id: 'doyoung_2', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_2.jpg', rarity: 'R' },
         { id: 'doyoung_3', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_3.jpg', rarity: 'SR' },
@@ -97,8 +138,11 @@
         { id: 'doyoung_6', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_6.jpg', rarity: 'SSR' },
         { id: 'doyoung_7', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_7.jpg', rarity: 'UR' },
         { id: 'doyoung_8', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_8.jpg', rarity: 'UR' },
+        { id: 'doyoung_9', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_9.jpg', rarity: 'UR' },
+        { id: 'doyoung_10', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_10.jpg', rarity: 'UR' },
 
-        // Haruto (8 cards)[cite: 3]
+
+        // Haruto (10 cards)[cite: 3]
         { id: 'haruto_1', name: 'Haruto', group: 'haruto', img: './photocards/haruto_1.jpg', rarity: 'R' },
         { id: 'haruto_2', name: 'Haruto', group: 'haruto', img: './photocards/haruto_2.jpg', rarity: 'R' },
         { id: 'haruto_3', name: 'Haruto', group: 'haruto', img: './photocards/haruto_3.jpg', rarity: 'SR' },
@@ -107,8 +151,11 @@
         { id: 'haruto_6', name: 'Haruto', group: 'haruto', img: './photocards/haruto_6.jpg', rarity: 'SSR' },
         { id: 'haruto_7', name: 'Haruto', group: 'haruto', img: './photocards/haruto_7.jpg', rarity: 'UR' },
         { id: 'haruto_8', name: 'Haruto', group: 'haruto', img: './photocards/haruto_8.jpg', rarity: 'UR' },
+        { id: 'haruto_9', name: 'Haruto', group: 'haruto', img: './photocards/haruto_9.jpg', rarity: 'UR' },
+        { id: 'haruto_10', name: 'Haruto', group: 'haruto', img: './photocards/haruto_10.jpg', rarity: 'UR' },
 
-        // Jeongwoo (8 cards)[cite: 3]
+
+        // Jeongwoo (10 cards)[cite: 3]
         { id: 'jeongwoo_1', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_1.jpg', rarity: 'R' },
         { id: 'jeongwoo_2', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_2.jpg', rarity: 'R' },
         { id: 'jeongwoo_3', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_3.jpg', rarity: 'SR' },
@@ -117,8 +164,11 @@
         { id: 'jeongwoo_6', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_6.jpg', rarity: 'SSR' },
         { id: 'jeongwoo_7', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_7.jpg', rarity: 'UR' },
         { id: 'jeongwoo_8', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_8.jpg', rarity: 'UR' },
+        { id: 'jeongwoo_9', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_9.jpg', rarity: 'UR' },
+        { id: 'jeongwoo_10', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_10.jpg', rarity: 'UR' },
 
-        // Junghwan (8 cards)[cite: 3]
+
+        // Junghwan (10 cards)[cite: 3]
         { id: 'junghwan_1', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_1.jpg', rarity: 'R' },
         { id: 'junghwan_2', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_2.jpg', rarity: 'R' },
         { id: 'junghwan_3', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_3.jpg', rarity: 'SR' },
@@ -127,6 +177,9 @@
         { id: 'junghwan_6', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_6.jpg', rarity: 'SSR' },
         { id: 'junghwan_7', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_7.jpg', rarity: 'UR' },
         { id: 'junghwan_8', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_8.jpg', rarity: 'UR' },
+        { id: 'junghwan_9', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_9.jpg', rarity: 'UR' },
+        { id: 'junghwan_10', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_10.jpg', rarity: 'UR' },
+
 
         // DUO (20 cards)[cite: 3]
         { id: 'duo_1', name: 'DUO 1', group: 'duo', img: './photocards/duo_1.jpg', rarity: 'SR' },
@@ -148,7 +201,10 @@
         { id: 'duo_17', name: 'DUO 17', group: 'duo', img: './photocards/duo_17.jpg', rarity: 'UR' },
         { id: 'duo_18', name: 'DUO 18', group: 'duo', img: './photocards/duo_18.jpg', rarity: 'UR' },
         { id: 'duo_19', name: 'DUO 19', group: 'duo', img: './photocards/duo_19.jpg', rarity: 'UR' },
-        { id: 'duo_20', name: 'DUO 20', group: 'duo', img: './photocards/duo_20.jpg', rarity: 'UR' }
+        { id: 'duo_20', name: 'DUO 20', group: 'duo', img: './photocards/duo_20.jpg', rarity: 'UR' },
+        { id: 'duo_21', name: 'DUO 21', group: 'duo', img: './photocards/duo_21.jpg', rarity: 'UR' },
+        { id: 'duo_22', name: 'DUO 22', group: 'duo', img: './photocards/duo_22.jpg', rarity: 'UR' },
+        { id: 'duo_23', name: 'DUO 23', group: 'duo', img: './photocards/duo_23.jpg', rarity: 'UR' }
     ];
 
     const CONFIG_BASE = {
@@ -630,9 +686,35 @@
             this.gameUiEl.classList.add('hidden');
             this.updateResultScreen();
             this.triggerPostGameDrops();
+
+            // 👉 在这里加上这行，结算时自动传分数到云端
+            this.submitScoreToCloud();
+
             if (this.endScreen) this.endScreen.classList.remove('hidden');
         }
 
+        // 👉 紧挨着 finishGame 下方，作为同级方法放进来
+        async submitScoreToCloud() {
+            if (!supabaseClient) return;
+            const playerName = getPlayerName();
+            const songName = this.currentSong ? (this.currentSong.name || this.currentSong.id) : 'Unknown Song';
+            const score = this.score || 0;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('leaderboard')
+                    .insert([
+                        { player_name: playerName, song_name: songName, score: score }
+                    ]);
+                if (error) {
+                    console.error("上传排行榜失败:", error.message);
+                } else {
+                    console.log("成功同步分数到云端排行榜！");
+                }
+            } catch (err) {
+                console.error("网络异常:", err);
+            }
+        }
         updateResultScreen() {
             const totalNotes = this.stats.perfect + this.stats.great + this.stats.good + this.stats.miss;
             const accuracy = totalNotes > 0 ? Math.round(((this.stats.perfect * 1 + this.stats.great * 0.8 + this.stats.good * 0.5) / totalNotes) * 100) : 0;

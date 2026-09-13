@@ -1,5 +1,5 @@
 // sw.js - 离线缓存核心文件
-const CACHE_NAME = 'superstar-treasure-v1';
+const CACHE_NAME = 'superstar-treasure-v2';
 
 // 自动提取游戏里所有静态资源、音频和图片进行离线缓存
 const urlsToCache = [
@@ -32,10 +32,16 @@ const urlsToCache = [
     './songs/everything.mp3', './songs/everything.mp4', './covers/everything_small.jpg', './covers/everything_big.jpg',
     './songs/paradise.mp3', './songs/paradise.mp4', './covers/paradise_small.jpg', './covers/paradise_big.jpg',
     // 小卡图片缓存
-    './photocards/doyoung_1.jpg', './photocards/doyoung_2.jpg', './photocards/doyoung_3.jpg', './photocards/doyoung_4.jpg',
-    './photocards/doyoung_5.jpg', './photocards/doyoung_6.jpg', './photocards/doyoung_7.jpg', './photocards/doyoung_8.jpg',
+    './photocards/doyoung_1.jpg', './photocards/doyoung_2.jpg', './photocards/doyoung_3.jpg', './photocards/doyoung_4.jpg', './photocards/doyoung_5.jpg',
+    './photocards/doyoung_6.jpg', './photocards/doyoung_7.jpg', './photocards/doyoung_8.jpg', './photocards/doyoung_9.jpg', './photocards/doyoung_10.jpg',
+    './photocards/asahi_1.jpg', './photocards/asahi_2.jpg', './photocards/asahi_3.jpg', './photocards/asahi_4.jpg', './photocards/asahi_5.jpg',
+    './photocards/asahi_6.jpg', './photocards/asahi_7.jpg', './photocards/asahi_8.jpg', './photocards/asahi_9.jpg', './photocards/asahi_10.jpg',
+    './photocards/yoshi_1.jpg', './photocards/yoshi_2.jpg', './photocards/yoshi_3.jpg', './photocards/yoshi_4.jpg', './photocards/yoshi_5.jpg',
+    './photocards/yoshi_6.jpg', './photocards/yoshi_7.jpg', './photocards/yoshi_8.jpg', './photocards/yoshi_9.jpg', './photocards/yoshi_10.jpg',
     './photocards/duo_1.jpg', './photocards/duo_2.jpg', './photocards/duo_3.jpg', './photocards/duo_4.jpg',
-    './photocards/duo_5.jpg', './photocards/duo_6.jpg', './photocards/duo_7.jpg', './photocards/duo_8.jpg', './photocards/duo_9.jpg'
+    './photocards/duo_5.jpg', './photocards/duo_6.jpg', './photocards/duo_7.jpg', './photocards/duo_8.jpg', './photocards/duo_9.jpg', './photocards/duo_10.jpg',
+    './photocards/duo_11.jpg', './photocards/duo_12.jpg', './photocards/duo_13.jpg', './photocards/duo_14.jpg', './photocards/duo_15.jpg', './photocards/duo_16.jpg',
+    './photocards/duo_17.jpg', './photocards/duo_18.jpg', './photocards/duo_19.jpg', './photocards/duo_20.jpg'
 ];
 
 self.addEventListener('install', (event) => {
