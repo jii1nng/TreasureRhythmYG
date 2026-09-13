@@ -598,7 +598,7 @@
             if (!this.isPlaying || this.isPaused) return;
             this.trackPressState[trackIdx] = true;
 
-            // 修复：将原本未定义的 note 改为通过正确的 trackIdx 计算坐标
+            // 修正：确保点击特效精确落在对应轨道的正中心
             const trackX = this.trackAreaLeft + trackIdx * this.trackWidth + this.trackWidth / 2;
 
             this.hitEffects.push({
@@ -631,7 +631,6 @@
                 }
             }
         }
-
         releaseTrack(trackIdx) {
             this.trackPressState[trackIdx] = false;
             for (const note of this.notes) {
@@ -1057,9 +1056,12 @@
             for (const note of this.notes) {
                 if (note.completed && !note.isHolding) continue;
                 const colorConfig = TRACK_COLORS[note.track];
-                const trackX = this.trackAreaLeft + note.track * this.trackWidth + this.trackWidth / 2;
+                // 严格锁定当前轨道的中心点
+                const trackX = this.trackAreaLeft + note.track * this.trackWidth;
                 const centerX = trackX + this.trackWidth / 2;
-                const noteW = this.trackWidth * 0.82;
+
+                // 将音符宽度设为轨道宽度的 75% 左右，留出间距，绝对不会“变宽串轨”
+                const noteW = this.trackWidth * 0.75;
                 const noteH = 16;
                 const startY = this.judgeLineY - (note.time - this.gameTime) * (this.CONFIG.NOTE_SPEED / 1000);
 
