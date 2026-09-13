@@ -45,6 +45,12 @@
 
         <!-- 开始/单排选歌界面 -->
         <div id="start-screen" class="overlay">
+            <div class="home-top-bar"
+                style="position: absolute; top: 15px; right: 20px; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.6); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(0,229,255,0.3);">
+                <span style="font-size: 1.1rem;">💎</span>
+                <span id="home-gems-display" style="color: #00e5ff; font-weight: 900; font-size: 1rem;">1000</span>
+            </div>
+
             <h1 class="logo">SUPERSTAR<br><span>TREASURE</span></h1>
 
             <div class="song-selection-container">
@@ -55,9 +61,20 @@
             </div>
 
             <button id="start-btn" class="btn primary-lg" disabled>please select a song</button>
+
+            <div
+                style="display: flex; gap: 10px; width: 90%; max-width: 650px; margin-top: 15px; position: relative; z-index: 10;">
+                <button id="open-collection-btn" class="btn secondary"
+                    style="flex: 1; background: rgba(0, 229, 255, 0.2); border: 1px solid rgba(0, 229, 255, 0.6); color: #00e5ff; font-weight: bold; padding: 12px; cursor: pointer;">
+                    💎 ALBUM
+                </button>
+                <button id="open-shop-btn" class="btn secondary"
+                    style="flex: 1; background: rgba(255, 0, 170, 0.2); border: 1px solid rgba(255, 0, 170, 0.6); color: #ff00aa; font-weight: bold; padding: 12px; cursor: pointer;">
+                    🛒 SHOP & GACHA
+                </button>
+            </div>
         </div>
 
-        <!-- 结算界面 -->
         <div id="end-screen" class="overlay hidden">
             <div class="result-card">
                 <span class="subtitle">RESULT</span>
