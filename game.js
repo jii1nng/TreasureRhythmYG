@@ -471,8 +471,9 @@
 
             const resultHomeBtn = document.getElementById('result-home-btn');
             if (resultHomeBtn) resultHomeBtn.addEventListener('click', () => { this.goHome(); });
+            // 确保音乐播完才触发结算
             this.audio.addEventListener('ended', () => {
-                this.finishGame();
+                this.showResultScreen();
             });
         }
 
