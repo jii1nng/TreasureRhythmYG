@@ -1,4 +1,4 @@
-// game.js - Version 2026.09.13-HighScoreIntegrated
+// game.js - Version 2026.09.13-PhotocardWithGemsAndSSSGlow
 (function () {
     'use strict';
 
@@ -25,6 +25,58 @@
         { id: 'here_i_stand', name: 'HERE I STAND', artist: 'TREASURE', cover: '🎤', coverBg: 'linear-gradient(135deg, #00e5ff, #0055ff)', coverImg: './covers/here_i_stand_small.jpg', detailImg: './covers/here_i_stand_big.jpg', video: './songs/here_i_stand.mp4', audio: './songs/here_i_stand.mp3' },
         { id: 'everything', name: 'EVERYTHING', artist: 'TREASURE', cover: '🎤', coverBg: 'linear-gradient(135deg, #00e5ff, #0055ff)', coverImg: './covers/everything_small.jpg', detailImg: './covers/everything_big.jpg', video: './songs/everything.mp4', audio: './songs/everything.mp3' },
         { id: 'paradise', name: 'PARADISE', artist: 'TREASURE', cover: '🎤', coverBg: 'linear-gradient(135deg, #00e5ff, #0055ff)', coverImg: './covers/paradise_small.jpg', detailImg: './covers/paradise_big.jpg', video: './songs/paradise.mp4', audio: './songs/paradise.mp3' }
+    ];
+
+    const PHOTO_CARDS = [
+        { id: 'hyunsuk_1', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_1.jpg', rarity: 'R' },
+        { id: 'hyunsuk_2', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_2.jpg', rarity: 'SR' },
+        { id: 'hyunsuk_3', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_3.jpg', rarity: 'SSR' },
+        { id: 'hyunsuk_sss', name: 'Hyunsuk [SPECIAL]', group: 'hyunsuk', img: './photocards/hyunsuk_1.jpg', rarity: 'SSS' },
+
+        { id: 'jihoon_1', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_1.jpg', rarity: 'R' },
+        { id: 'jihoon_2', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_2.jpg', rarity: 'SR' },
+        { id: 'jihoon_3', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_3.jpg', rarity: 'SSR' },
+        { id: 'jihoon_sss', name: 'Jihoon [SPECIAL]', group: 'jihoon', img: './photocards/jihoon_1.jpg', rarity: 'SSS' },
+
+        { id: 'yoshi_1', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_1.jpg', rarity: 'R' },
+        { id: 'yoshi_2', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_2.jpg', rarity: 'SR' },
+        { id: 'yoshi_3', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_3.jpg', rarity: 'SSR' },
+        { id: 'yoshi_sss', name: 'Yoshi [SPECIAL]', group: 'yoshi', img: './photocards/yoshi_1.jpg', rarity: 'SSS' },
+
+        { id: 'junkyu_1', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_1.jpg', rarity: 'R' },
+        { id: 'junkyu_2', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_2.jpg', rarity: 'SR' },
+        { id: 'junkyu_3', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_3.jpg', rarity: 'SSR' },
+        { id: 'junkyu_sss', name: 'Junkyu [SPECIAL]', group: 'junkyu', img: './photocards/junkyu_1.jpg', rarity: 'SSS' },
+
+        { id: 'jaehyuk_1', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_1.jpg', rarity: 'R' },
+        { id: 'jaehyuk_2', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_2.jpg', rarity: 'SR' },
+        { id: 'jaehyuk_3', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_3.jpg', rarity: 'SSR' },
+        { id: 'jaehyuk_sss', name: 'Jaehyuk [SPECIAL]', group: 'jaehyuk', img: './photocards/jaehyuk_1.jpg', rarity: 'SSS' },
+
+        { id: 'asahi_1', name: 'Asahi', group: 'asahi', img: './photocards/asahi_1.jpg', rarity: 'R' },
+        { id: 'asahi_2', name: 'Asahi', group: 'asahi', img: './photocards/asahi_2.jpg', rarity: 'SR' },
+        { id: 'asahi_3', name: 'Asahi', group: 'asahi', img: './photocards/asahi_3.jpg', rarity: 'SSR' },
+        { id: 'asahi_sss', name: 'Asahi [SPECIAL]', group: 'asahi', img: './photocards/asahi_1.jpg', rarity: 'SSS' },
+
+        { id: 'doyoung_1', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_1.jpg', rarity: 'R' },
+        { id: 'doyoung_2', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_2.jpg', rarity: 'SR' },
+        { id: 'doyoung_3', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_3.jpg', rarity: 'SSR' },
+        { id: 'doyoung_sss', name: 'Doyoung [SPECIAL]', group: 'doyoung', img: './photocards/doyoung_1.jpg', rarity: 'SSS' },
+
+        { id: 'haruto_1', name: 'Haruto', group: 'haruto', img: './photocards/haruto_1.jpg', rarity: 'R' },
+        { id: 'haruto_2', name: 'Haruto', group: 'haruto', img: './photocards/haruto_2.jpg', rarity: 'SR' },
+        { id: 'haruto_3', name: 'Haruto', group: 'haruto', img: './photocards/haruto_3.jpg', rarity: 'SSR' },
+        { id: 'haruto_sss', name: 'Haruto [SPECIAL]', group: 'haruto', img: './photocards/haruto_1.jpg', rarity: 'SSS' },
+
+        { id: 'jeongwoo_1', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_1.jpg', rarity: 'R' },
+        { id: 'jeongwoo_2', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_2.jpg', rarity: 'SR' },
+        { id: 'jeongwoo_3', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_3.jpg', rarity: 'SSR' },
+        { id: 'jeongwoo_sss', name: 'Jeongwoo [SPECIAL]', group: 'jeongwoo', img: './photocards/jeongwoo_1.jpg', rarity: 'SSS' },
+
+        { id: 'junghwan_1', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_1.jpg', rarity: 'R' },
+        { id: 'junghwan_2', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_2.jpg', rarity: 'SR' },
+        { id: 'junghwan_3', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_3.jpg', rarity: 'SSR' },
+        { id: 'junghwan_sss', name: 'Junghwan [SPECIAL]', group: 'junghwan', img: './photocards/junghwan_1.jpg', rarity: 'SSS' }
     ];
 
     const CONFIG_BASE = {
@@ -150,14 +202,25 @@
             this.setupTouchControls();
             this.renderSongList();
             this.renderSongDetail();
+
+            this.injectCollectionUI();
+            this.updateHomeGemsDisplay();
+
             this.loop = this.loop.bind(this);
+        }
+
+        updateHomeGemsDisplay() {
+            const gemsEl = document.getElementById('home-gems-display');
+            if (gemsEl) {
+                const currentGems = parseInt(localStorage.getItem('player_gems') || '1000', 10);
+                gemsEl.textContent = currentGems.toLocaleString();
+            }
         }
 
         renderSongList() {
             if (!this.songListEl) return;
             this.songListEl.innerHTML = '';
             SONG_LIST.forEach(song => {
-                // 读取当前歌曲在 normal 模式下的本地最高分用于列表展示
                 const storageKey = `high_score_${song.id}_normal`;
                 const highScore = parseInt(localStorage.getItem(storageKey) || '0', 10);
 
@@ -250,36 +313,42 @@
 
         setupEventListeners() {
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' || e.key.toLowerCase() === 'p') {
-                    if (this.isPlaying) this.togglePause();
-                    return;
-                }
                 if (this.isPaused) return;
                 const trackIdx = KEY_MAP.indexOf(e.key.toLowerCase());
-                if (trackIdx !== -1 && !this.trackPressState[trackIdx]) this.pressTrack(trackIdx);
+                if (trackIdx !== -1 && !this.trackPressState[trackIdx]) {
+                    this.pressTrack(trackIdx);
+                }
             });
+
             document.addEventListener('keyup', (e) => {
                 const trackIdx = KEY_MAP.indexOf(e.key.toLowerCase());
                 if (trackIdx !== -1) this.releaseTrack(trackIdx);
             });
+
             this.startBtn.addEventListener('click', () => { this.sound.playStart(); this.startGame(); });
             this.retryBtn.addEventListener('click', () => { this.sound.playStart(); this.startGame(); });
-            this.pauseBtn.addEventListener('click', () => this.togglePause());
-            this.resumeBtn.addEventListener('click', () => this.togglePause());
-            this.restartInGameBtn.addEventListener('click', () => { this.togglePause(); this.sound.playStart(); this.startGame(); });
+            this.pauseBtn.addEventListener('click', () => { this.togglePause(); });
+            this.resumeBtn.addEventListener('click', () => { this.togglePause(); });
+
+            // 修复：点击游戏内重新开始按钮时，关闭暂停浮层并重新开始游戏
+            this.restartInGameBtn.addEventListener('click', () => {
+                this.pauseOverlay.classList.add('hidden');
+                this.sound.playStart();
+                this.startGame();
+            });
+
             this.homeBtn.addEventListener('click', () => { this.goHome(); this.renderSongList(); });
 
             const resultHomeBtn = document.getElementById('result-home-btn');
-            if (resultHomeBtn) resultHomeBtn.addEventListener('click', () => { this.goHome(); this.renderSongList(); });
-
+            if (resultHomeBtn) resultHomeBtn.addEventListener('click', () => { this.goHome(); });
             this.audio.addEventListener('ended', () => {
-                if (this.isPlaying && !this.isEnded) this.endGame();
+                this.finishGame();
             });
         }
 
         setupTouchControls() {
             const handleTouchInput = (clientX) => {
-                if (!this.isPlaying || this.isPaused) return;
+                if (!this.isPlaying || this.isPaused) return -1;
                 const relativeX = clientX - this.trackAreaLeft;
                 if (relativeX >= 0 && relativeX <= this.trackAreaWidth) {
                     const trackIdx = Math.floor(relativeX / this.trackWidth);
@@ -303,7 +372,7 @@
 
             this.canvas.addEventListener('mousedown', (e) => {
                 const idx = handleTouchInput(e.clientX);
-                if (idx !== -1) this.pressTrack(idx);
+                if (idx !== -1 && !this.trackPressState[idx]) this.pressTrack(idx);
             });
             this.canvas.addEventListener('mouseup', (e) => {
                 for (let i = 0; i < 4; i++) this.releaseTrack(i);
@@ -336,6 +405,7 @@
             this.endScreen.classList.add('hidden');
             this.gameUiEl.classList.add('hidden');
             this.startScreen.style.display = 'flex';
+            this.updateHomeGemsDisplay();
         }
 
         generateNotesByMode() {
@@ -399,7 +469,10 @@
         pressTrack(trackIdx) {
             if (!this.isPlaying || this.isPaused) return;
             this.trackPressState[trackIdx] = true;
+
+            // 修复：将原本未定义的 note 改为通过正确的 trackIdx 计算坐标
             const trackX = this.trackAreaLeft + trackIdx * this.trackWidth + this.trackWidth / 2;
+
             this.hitEffects.push({
                 x: trackX, y: this.judgeLineY, radius: 10, maxRadius: 70, alpha: 1.0, color: TRACK_COLORS[trackIdx].glow
             });
@@ -476,7 +549,7 @@
             });
         }
 
-        endGame() {
+        finishGame() {
             if (this.isEnded) return;
             this.isEnded = true;
             this.isPlaying = false;
@@ -484,6 +557,7 @@
             try { this.video.pause(); } catch (e) { }
             this.gameUiEl.classList.add('hidden');
             this.updateResultScreen();
+            this.triggerPostGameDrops();
             if (this.endScreen) this.endScreen.classList.remove('hidden');
         }
 
@@ -492,7 +566,6 @@
             const accuracy = totalNotes > 0 ? Math.round(((this.stats.perfect * 1 + this.stats.great * 0.8 + this.stats.good * 0.5) / totalNotes) * 100) : 0;
             let rank = accuracy >= 95 ? 'S' : accuracy >= 85 ? 'A' : accuracy >= 75 ? 'B' : accuracy >= 60 ? 'C' : 'D';
 
-            // 本地存储最高分逻辑
             const storageKey = `high_score_${this.currentSong ? this.currentSong.id : 'default'}_${this.selectedMode}`;
             const previousBest = parseInt(localStorage.getItem(storageKey) || '0', 10);
             if (this.score > previousBest) {
@@ -509,6 +582,213 @@
             document.getElementById('stat-miss').textContent = this.stats.miss;
             document.getElementById('stat-maxcombo').textContent = this.maxCombo;
             document.getElementById('stat-accuracy').textContent = accuracy + '%';
+        }
+
+        triggerPostGameDrops() {
+            const dropContainer = document.getElementById('card-drop-result');
+            if (!dropContainer) return;
+
+            const earnedGems = 30 + Math.floor(this.score / 2000) + (this.stats.perfect > 20 ? 20 : 5);
+            let currentGems = parseInt(localStorage.getItem('player_gems') || '1000', 10);
+            currentGems += earnedGems;
+            localStorage.setItem('player_gems', currentGems.toString());
+
+            const randomCard = PHOTO_CARDS[Math.floor(Math.random() * PHOTO_CARDS.length)];
+            let myCards = JSON.parse(localStorage.getItem('my_photocards') || '[]');
+            const isNew = !myCards.includes(randomCard.id);
+
+            if (isNew) {
+                myCards.push(randomCard.id);
+                localStorage.setItem('my_photocards', JSON.stringify(myCards));
+            }
+
+            const isSSS = randomCard.rarity === 'SSS';
+
+            dropContainer.innerHTML = `
+                <div style="margin: 10px auto; padding: 12px; background: rgba(0,0,0,0.75); border-radius: 12px; display: inline-block; border: 2px solid ${isSSS ? '#ff00aa' : '#00e5ff'}; box-shadow: 0 0 ${isSSS ? '25px #ff00aa' : '15px rgba(0,229,255,0.4)'};">
+                    <div style="font-size: 0.8rem; color: #ffea00; font-weight: bold; margin-bottom: 6px;">🎁 LIVE REWARDS DROPPED!</div>
+                    <div style="font-size: 0.75rem; color: #00e5ff; margin-bottom: 8px;">+${earnedGems} 💎 Diamonds Collected!</div>
+                    
+                    <div style="position: relative; display: inline-block;">
+                        ${isSSS ? '<div class="sss-glow-effect"></div>' : ''}
+                        <img src="${randomCard.img}" style="width: 90px; height: 125px; object-fit: cover; border-radius: 8px; border: 2px solid ${isSSS ? '#ff00aa' : '#fff'};" onerror="this.src='';">
+                    </div>
+                    
+                    <div style="font-size: 0.8rem; color: white; margin-top: 6px; font-weight: bold;">
+                        ${randomCard.name} <span style="color: ${isSSS ? '#ff00aa' : '#00e5ff'};">[${randomCard.rarity}]</span> ${isNew ? '<span style="color:#ff00aa;">NEW!</span>' : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        injectCollectionUI() {
+            if (!window._uiDelegateBound) {
+                window._uiDelegateBound = true;
+                document.addEventListener('click', (e) => {
+                    const collectionBtn = e.target.closest('#open-collection-btn');
+                    if (collectionBtn) {
+                        this.sound.playClick();
+                        this.openCollectionModal();
+                        return;
+                    }
+
+                    const shopBtn = e.target.closest('#open-shop-btn');
+                    if (shopBtn) {
+                        this.sound.playClick();
+                        this.openShopModal();
+                        return;
+                    }
+                });
+            }
+
+            const endCard = document.querySelector('.result-card') || this.endScreen;
+            if (endCard && !document.getElementById('card-drop-result')) {
+                const dropDiv = document.createElement('div');
+                dropDiv.id = 'card-drop-result';
+                endCard.appendChild(dropDiv);
+            }
+        }
+
+        openCollectionModal() {
+            let modal = document.getElementById('collection-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'collection-modal';
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;';
+                document.body.appendChild(modal);
+            }
+
+            const myCards = JSON.parse(localStorage.getItem('my_photocards') || '[]');
+            const currentBias = localStorage.getItem('my_bias') || '';
+
+            let cardsHtml = PHOTO_CARDS.map(card => {
+                const owned = myCards.includes(card.id);
+                const isBias = currentBias === card.id;
+                const isSSS = card.rarity === 'SSS';
+
+                return `
+                    <div style="background: rgba(255,255,255,0.05); border: 2px solid ${isBias ? '#ff00aa' : (isSSS && owned ? '#ff00ff' : (owned ? '#00e5ff' : 'rgba(255,255,255,0.1)'))}; border-radius: 10px; padding: 8px; text-align: center; width: 95px; box-sizing: border-box; position: relative; ${isSSS && owned ? 'box-shadow: 0 0 15px rgba(255,0,255,0.6); animation: pulseGlow 1.5s infinite alternate;' : ''}">
+                        ${isBias ? '<div style="position: absolute; top: 2px; right: 2px; background: #ff00aa; font-size: 8px; color: white; padding: 1px 4px; border-radius: 4px; z-index: 2;">BIAS</div>' : ''}
+                        <div style="position: relative; display: inline-block;">
+                            ${isSSS && owned ? '<div style="position: absolute; inset: -3px; border-radius: 8px; background: linear-gradient(45deg, #ff00aa, #00e5ff, #ffea00); z-index: 0; filter: blur(4px); opacity: 0.8; animation: rotateGlow 3s linear infinite;"></div>' : ''}
+                            <img src="${card.img}" style="width: 76px; height: 102px; object-fit: cover; border-radius: 6px; position: relative; z-index: 1; filter: ${owned ? 'none' : 'grayscale(100%) brightness(30%)'};" onerror="this.src='';">
+                        </div>
+                        <div style="font-size: 10px; color: white; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold;">${card.name}</div>
+                        <div style="font-size: 9px; color: ${isSSS ? '#ff00aa' : '#00e5ff'}; font-weight: bold;">[${card.rarity}]</div>
+                        ${owned ? `<button class="set-bias-btn" data-id="${card.id}" style="margin-top: 4px; font-size: 9px; background: #00e5ff; border: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-weight: bold;">${isBias ? 'BIAS' : 'Set Bias'}</button>` : '<div style="font-size: 9px; color: #888; margin-top:4px;">Locked</div>'}
+                    </div>
+                `;
+            }).join('');
+
+            modal.innerHTML = `
+                <div style="background: #111; border: 2px solid #00e5ff; border-radius: 16px; width: 100%; max-width: 720px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 30px rgba(0,229,255,0.3);">
+                    <div style="padding: 15px 20px; background: rgba(0,229,255,0.1); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <h3 style="margin: 0; color: #00e5ff; font-size: 1.1rem;">💎 TREASURE PHOTOCOARD ALBUM (${myCards.length}/${PHOTO_CARDS.length})</h3>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button id="modal-shop-btn" style="background: linear-gradient(135deg, #ff00aa, #ff5500); border: none; color: white; padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; box-shadow: 0 0 10px rgba(255,0,170,0.4);">🛒 Card Shop</button>
+                            <button id="close-modal-btn" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
+                        </div>
+                    </div>
+                    <div style="padding: 15px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; justify-items: center;">
+                        ${cardsHtml}
+                    </div>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+
+            modal.querySelector('#close-modal-btn').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            modal.querySelector('#modal-shop-btn').addEventListener('click', () => {
+                this.sound.playClick();
+                this.openShopModal();
+            });
+
+            modal.querySelectorAll('.set-bias-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const cardId = e.target.dataset.id;
+                    localStorage.setItem('my_bias', cardId);
+                    this.sound.playClick();
+                    this.openCollectionModal();
+                });
+            });
+        }
+
+        openShopModal() {
+            let shopModal = document.getElementById('shop-modal');
+            if (!shopModal) {
+                shopModal = document.createElement('div');
+                shopModal.id = 'shop-modal';
+                shopModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;';
+                document.body.appendChild(shopModal);
+            }
+
+            let gems = parseInt(localStorage.getItem('player_gems') || '1000', 10);
+
+            shopModal.innerHTML = `
+                <div style="background: #111; border: 2px solid #ff00aa; border-radius: 16px; width: 100%; max-width: 480px; padding: 25px; box-sizing: border-box; text-align: center; box-shadow: 0 0 35px rgba(255,0,170,0.4);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0; color: #ff00aa; font-size: 1.3rem;">🛒 TREASURE CARD SHOP & GACHA</h3>
+                        <button id="close-shop-btn" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem; color: #00e5ff; font-weight: bold;">
+                        Your Diamonds: <span id="shop-gems-display">${gems}</span> 💎
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="background: rgba(255,0,170,0.1); border: 1px solid #ff00aa; border-radius: 10px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="text-align: left;">
+                                <div style="color: white; font-weight: bold; font-size: 1rem;">Single Gacha Draw</div>
+                                <div style="color: #aaa; font-size: 0.75rem;">Chance to get glowing SSS cards!</div>
+                            </div>
+                            <button id="buy-single-btn" style="background: linear-gradient(135deg, #ff00aa, #ff5500); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 0 10px rgba(255,0,170,0.5);">Draw (100 💎)</button>
+                        </div>
+                    </div>
+                    <div id="shop-draw-result" style="margin-top: 20px; min-height: 140px;"></div>
+                </div>
+            `;
+
+            shopModal.style.display = 'flex';
+
+            shopModal.querySelector('#close-shop-btn').addEventListener('click', () => {
+                shopModal.style.display = 'none';
+                this.updateHomeGemsDisplay();
+            });
+
+            shopModal.querySelector('#buy-single-btn').addEventListener('click', () => {
+                let currentGems = parseInt(localStorage.getItem('player_gems') || '1000', 10);
+                if (currentGems < 100) {
+                    alert('Not enough diamonds! Play songs to earn more!');
+                    return;
+                }
+                currentGems -= 100;
+                localStorage.setItem('player_gems', currentGems.toString());
+                shopModal.querySelector('#shop-gems-display').textContent = currentGems;
+                this.updateHomeGemsDisplay();
+                this.sound.playClick();
+
+                const randomCard = PHOTO_CARDS[Math.floor(Math.random() * PHOTO_CARDS.length)];
+                let myCards = JSON.parse(localStorage.getItem('my_photocards') || '[]');
+                const isNew = !myCards.includes(randomCard.id);
+                if (isNew) {
+                    myCards.push(randomCard.id);
+                    localStorage.setItem('my_photocards', JSON.stringify(myCards));
+                }
+
+                const isSSS = randomCard.rarity === 'SSS';
+                const resultDiv = shopModal.querySelector('#shop-draw-result');
+                resultDiv.innerHTML = `
+                    <div style="padding: 12px; background: rgba(0,0,0,0.8); border-radius: 12px; display: inline-block; border: 2px solid ${isSSS ? '#ff00aa' : '#00e5ff'}; box-shadow: 0 0 ${isSSS ? '25px #ff00aa' : '15px rgba(0,229,255,0.4)'};">
+                        <div style="font-size: 0.8rem; color: #00e5ff; font-weight: bold; margin-bottom: 6px;">🎉 GACHA SUCCESS! ${isNew ? '<span style="color:#ff00aa;">[NEW CARD!]</span>' : ''}</div>
+                        <div style="position: relative; display: inline-block;">
+                            ${isSSS ? '<div style="position: absolute; inset: -3px; border-radius: 8px; background: linear-gradient(45deg, #ff00aa, #00e5ff, #ffea00); filter: blur(5px); opacity: 0.9;"></div>' : ''}
+                            <img src="${randomCard.img}" style="width: 85px; height: 115px; object-fit: cover; border-radius: 6px; position: relative; z-index: 1;" onerror="this.src='';">
+                        </div>
+                        <div style="font-size: 0.85rem; color: white; margin-top: 6px; font-weight: bold;">${randomCard.name} <span style="color: ${isSSS ? '#ff00aa' : '#00e5ff'};">[${randomCard.rarity}]</span></div>
+                    </div>
+                `;
+            });
         }
 
         loop(timestamp) {
@@ -623,7 +903,7 @@
             for (const note of this.notes) {
                 if (note.completed && !note.isHolding) continue;
                 const colorConfig = TRACK_COLORS[note.track];
-                const trackX = this.trackAreaLeft + note.track * this.trackWidth;
+                const trackX = this.trackAreaLeft + note.track * this.trackWidth + this.trackWidth / 2;
                 const centerX = trackX + this.trackWidth / 2;
                 const noteW = this.trackWidth * 0.82;
                 const noteH = 16;
@@ -732,6 +1012,19 @@
             this.ctx.shadowBlur = 0;
         }
     }
+
+    const styleElem = document.createElement('style');
+    styleElem.innerHTML = `
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(255,0,170,0.5); }
+            100% { box-shadow: 0 0 25px rgba(0,229,255,0.9); }
+        }
+        @keyframes rotateGlow {
+            0% { filter: hue-rotate(0deg) blur(5px); }
+            100% { filter: hue-rotate(360deg) blur(5px); }
+        }
+    `;
+    document.head.appendChild(styleElem);
 
     window.addEventListener('load', () => {
         window._game = new Game();
