@@ -1,5 +1,5 @@
 (function () {
-    'use strict'; const SUPABASE_URL = 'https://khjzhoiltfujezxlddfs.supabase.co';
+    'use strict'; const SUPABASE_URL = 'https://khjzhoiltfujezxlddfs.supabase.co/rest/v1/';
     const SUPABASE_KEY = 'sb_publishable_G0ym78XaN3eeOry4BlyWww_JTaq6JP9'; // 换成你的 Key
 
     let supabaseClient = null;
@@ -536,7 +536,7 @@
             if (resultHomeBtn) resultHomeBtn.addEventListener('click', () => { this.goHome(); });
             // 确保音乐播完才触发结算
             this.audio.addEventListener('ended', () => {
-                this.showResultScreen();
+                this.finishGame();
             });
         }
 
@@ -636,9 +636,6 @@
             this.pauseOverlay.classList.add('hidden');
             this.gameUiEl.classList.remove('hidden');
 
-            this.isPlaying = true;
-            this.isPaused = false;
-            this.isEnded = false;
             this.score = 0;
             this.combo = 0;
             this.maxCombo = 0;
@@ -646,18 +643,27 @@
             this.floatingTexts = [];
             if (this.scoreEl) this.scoreEl.textContent = '0';
 
-            setTimeout(() => {
+            // 监听音频元数据加载完成，确保 duration 准确
+            this.audio.onloadedmetadata = () => {
                 if (this.video.src) this.video.play().catch(() => { });
-                if (this.audio.src) {
-                    this.audio.currentTime = 0;
-                    this.audio.play().catch(() => { });
-                }
-                this.generateNotesByMode();
-            }, 300);
+                this.audio.currentTime = 0;
+                this.audio.play().catch(() => { });
 
-            this.startTime = performance.now();
-            this.lastTimestamp = this.startTime;
-            requestAnimationFrame(this.loop);
+                // 根据真实的音频时长生成 notes
+                this.generateNotesByMode();
+
+                this.isPlaying = true;
+                this.isPaused = false;
+                this.isEnded = false;
+                this.startTime = performance.now();
+                this.lastTimestamp = this.startTime;
+                requestAnimationFrame(this.loop);
+            };
+
+            // 防止某些情况下 loadedmetadata 不触发的兜底（如本地缓存秒加载）
+            if (this.audio.readyState >= 1) {
+                this.audio.onloadedmetadata();
+            }
         }
 
         pressTrack(trackIdx) {
