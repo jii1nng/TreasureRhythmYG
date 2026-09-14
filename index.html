@@ -5,35 +5,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SUPERSTAR TREASURE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#05060c">
 </head>
 
 <body>
     <div id="game-container">
-        <!-- 背景视频与音频 -->
         <video id="bg-video" loop muted playsinline></video>
         <audio id="bg-music"></audio>
-
-        <!-- 游戏画布 -->
         <canvas id="game-canvas"></canvas>
+        <div id="stage-hitbox" class="stage-hitbox"></div>
 
-        <!-- 游戏内 UI 顶部区域 -->
-        <div id="game-ui" class="game-ui">
-            <button id="pause-btn" class="ui-pause-btn">⏸ PAUSE</button>
+        <div id="game-ui" class="game-ui hidden">
+            <button id="pause-btn" class="ui-pause-btn">PAUSE</button>
             <div class="score-board">
                 <span class="score-label">SCORE</span>
                 <span id="score-value">0</span>
             </div>
         </div>
 
-        <!-- 手机端屏幕底部虚拟按键区 -->
         <div id="touch-keys" class="touch-keys-container"></div>
 
-        <!-- 暂停弹窗 -->
         <div id="pause-overlay" class="overlay hidden">
             <div class="pause-card">
+                <p class="overlay-kicker">LIVE STAGE</p>
                 <h2>PAUSED</h2>
                 <div class="pause-actions">
                     <button id="resume-btn" class="btn primary">RESUME</button>
@@ -43,80 +44,136 @@
             </div>
         </div>
 
-        <!-- 开始/单排选歌界面 -->
-        <div id="start-screen" class="overlay">
-            <div class="home-top-bar"
-                style="position: absolute; top: 15px; right: 20px; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.6); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(0,229,255,0.3);">
-                <span style="font-size: 1.1rem;">💎</span>
-                <span id="home-gems-display" style="color: #00e5ff; font-weight: 900; font-size: 1rem;">1000</span>
-            </div>
+        <div id="start-screen" class="lobby">
+            <div class="lobby-ambient"></div>
 
-            <h1 class="logo">SUPERSTAR<br><span>TREASURE</span></h1>
-            <div style="text-align: center; margin-bottom: 15px;">
-                <button id="open-leaderboard-btn" class="btn" style="padding: 8px 20px; font-size: 1rem;">🏆
-                    查看排行榜</button>
-            </div>
-
-            <div class="song-selection-container">
-                <div id="song-list" class="song-list"></div>
-                <div id="song-detail" class="song-detail">
-                    <div class="no-song-placeholder">please select a song</div>
+            <header class="lobby-header">
+                <div class="brand-block">
+                    <span class="brand-kicker">LIVE RHYTHM STAGE</span>
+                    <h1 class="logo">SUPERSTAR<span>TREASURE</span></h1>
                 </div>
-                <div id="name-modal" class="modal"
-                    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:999;">
-                    <div class="modal-content"
-                        style="background:#222; padding:20px; border-radius:10px; text-align:center; color:#fff;">
-                        <h3>请输入你的玩家昵称</h3>
-                        <input type="text" id="player-name-input" placeholder="输入昵称..." maxlength="15"
-                            style="padding:8px; margin:10px 0; width:80%;">
-                        <br>
-                        <button id="save-name-btn" class="btn" style="padding:5px 15px;">确定</button>
+                <div class="header-meta">
+                    <button id="player-chip" class="player-chip" type="button">
+                        <span class="player-avatar">T</span>
+                        <span id="player-name-chip">GUEST</span>
+                    </button>
+                    <div class="gems-chip">
+                        <span class="gem-icon"></span>
+                        <span id="home-gems-display">1000</span>
                     </div>
                 </div>
+            </header>
 
-                <!-- 排行榜弹窗 -->
-                <div id="leaderboard-modal" class="modal"
-                    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:999;">
-                    <div class="modal-content"
-                        style="background:#222; padding:20px; border-radius:10px; width:80%; max-width:400px; color:#fff; text-align:center;">
-                        <h3>🏆 全球排行榜</h3>
-                        <div id="leaderboard-list"
-                            style="max-height:250px; overflow-y:auto; margin:15px 0; text-align:left;">正在加载...
+            <main class="lobby-pages">
+                <section id="page-songs" class="lobby-page active" data-tab="songs">
+                    <div class="featured-banner" id="featured-banner">
+                        <div class="featured-art" id="featured-art"></div>
+                        <div class="featured-copy">
+                            <span class="featured-label">NOW SELECTING</span>
+                            <h2 id="featured-title">CHOOSE YOUR TRACK</h2>
+                            <p id="featured-artist">TREASURE LIVE STAGE</p>
                         </div>
-                        <button id="close-leaderboard-btn" class="btn" style="padding:5px 15px;">关闭</button>
                     </div>
-                </div>
-            </div>
 
-            <button id="start-btn" class="btn primary-lg" disabled>please select a song</button>
+                    <div class="song-selection-container">
+                        <div class="panel-heading">
+                            <span>MUSIC LIST</span>
+                            <span class="panel-hint">SELECT A SONG TO ENTER STAGE</span>
+                        </div>
+                        <div id="song-list" class="song-list"></div>
+                        <div id="song-detail" class="song-detail">
+                            <div class="no-song-placeholder">Select a song to start the live</div>
+                        </div>
+                    </div>
 
-            <div
-                style="display: flex; gap: 10px; width: 90%; max-width: 650px; margin-top: 15px; position: relative; z-index: 10;">
-                <button id="open-collection-btn" class="btn secondary"
-                    style="flex: 1; background: rgba(0, 229, 255, 0.2); border: 1px solid rgba(0, 229, 255, 0.6); color: #00e5ff; font-weight: bold; padding: 12px; cursor: pointer;">
-                    💎 ALBUM
+                    <button id="start-btn" class="btn primary-lg" disabled>SELECT A SONG</button>
+                </section>
+
+                <section id="page-rank" class="lobby-page" data-tab="rank">
+                    <div class="page-hero">
+                        <span class="page-kicker">GLOBAL LIVE RANKING</span>
+                        <h2>LEADERBOARD</h2>
+                        <p id="rank-sync-status" class="sync-status">Tap to refresh cloud scores</p>
+                    </div>
+                    <div class="rank-toolbar">
+                        <button id="refresh-leaderboard-btn" class="ghost-btn" type="button">REFRESH</button>
+                    </div>
+                    <div id="leaderboard-list" class="rank-list">Loading ranking...</div>
+                </section>
+
+                <section id="page-store" class="lobby-page" data-tab="store">
+                    <div class="page-hero gold">
+                        <span class="page-kicker">CARD GACHA</span>
+                        <h2>STORE</h2>
+                        <p>Spend diamonds to draw TREASURE photocards</p>
+                    </div>
+                    <div id="store-panel" class="store-panel"></div>
+                </section>
+
+                <section id="page-album" class="lobby-page" data-tab="album">
+                    <div class="page-hero cyan">
+                        <span class="page-kicker">PHOTO CARD COLLECTION</span>
+                        <h2>ALBUM</h2>
+                        <p id="album-progress">Collect every member card</p>
+                    </div>
+                    <div id="album-grid" class="album-grid"></div>
+                </section>
+            </main>
+
+            <nav id="bottom-tabbar" class="bottom-tabbar">
+                <button class="tab-btn active" data-tab="songs" type="button">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 18V6l12-2v12" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" />
+                        <circle cx="7" cy="18" r="2.4" fill="currentColor" />
+                        <circle cx="19" cy="16" r="2.4" fill="currentColor" />
+                    </svg>
+                    <span>SONGS</span>
                 </button>
-                <button id="open-shop-btn" class="btn secondary"
-                    style="flex: 1; background: rgba(255, 0, 170, 0.2); border: 1px solid rgba(255, 0, 170, 0.6); color: #ff00aa; font-weight: bold; padding: 12px; cursor: pointer;">
-                    🛒 SHOP & GACHA
+                <button class="tab-btn" data-tab="rank" type="button">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 19V11h3v8H6zm5 0V5h3v14h-3zm5 0v-6h3v6h-3z" fill="currentColor" />
+                    </svg>
+                    <span>RANK</span>
                 </button>
+                <button class="tab-btn" data-tab="store" type="button">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 8h16l-1.2 11.2A2 2 0 0 1 16.81 21H7.19a2 2 0 0 1-1.99-1.8L4 8zm3-3h10l1 3H6l1-3z"
+                            fill="currentColor" />
+                    </svg>
+                    <span>STORE</span>
+                </button>
+                <button class="tab-btn" data-tab="album" type="button">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M5 4h10a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2zm12 2h2a2 2 0 0 1 2 2v12l-4-1.6V6z"
+                            fill="currentColor" />
+                    </svg>
+                    <span>ALBUM</span>
+                </button>
+            </nav>
+        </div>
+
+        <div id="name-modal" class="modal name-modal">
+            <div class="modal-content">
+                <span class="page-kicker">PLAYER PROFILE</span>
+                <h3>ENTER YOUR STAGE NAME</h3>
+                <input type="text" id="player-name-input" placeholder="Your nickname" maxlength="15">
+                <button id="save-name-btn" class="btn primary">CONFIRM</button>
             </div>
         </div>
 
         <div id="end-screen" class="overlay hidden">
             <div class="result-card">
-                <span class="subtitle">RESULT</span>
+                <span class="subtitle">LIVE RESULT</span>
                 <h1 id="grade-display" class="rank">S</h1>
                 <div class="total-score-box">
                     <span class="label">TOTAL SCORE</span>
                     <h2 id="final-score-value" class="total-score">0</h2>
                 </div>
-
                 <div class="high-score-box">
                     <span>BEST SCORE: <strong id="best-score">0</strong></span>
                 </div>
-
-                <!-- 四项判定数据 -->
+                <p id="upload-status" class="upload-status"></p>
                 <div class="stats-grid">
                     <div class="stat-item perfect">
                         <span id="stat-perfect" class="num">0</span>
@@ -135,7 +192,6 @@
                         <span class="txt">MISS</span>
                     </div>
                 </div>
-
                 <div class="sub-stats">
                     <div class="sub-item">
                         <span class="sub-label">MAX COMBO</span>
@@ -146,7 +202,6 @@
                         <span id="stat-accuracy" class="sub-value">0%</span>
                     </div>
                 </div>
-
                 <div class="result-actions">
                     <button id="retry-btn" class="btn primary">PLAY AGAIN</button>
                     <button id="result-home-btn" class="btn secondary">HOME</button>

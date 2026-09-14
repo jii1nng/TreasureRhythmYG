@@ -1,6 +1,8 @@
 (function () {
-    'use strict'; const SUPABASE_URL = 'https://khjzhoiltfujezxlddfs.supabase.co/rest/v1/';
-    const SUPABASE_KEY = 'sb_publishable_G0ym78XaN3eeOry4BlyWww_JTaq6JP9'; // 换成你的 Key
+    'use strict';
+    // 替换为你的 Supabase 项目 URL 和 Anon Key
+    const SUPABASE_URL = 'https://khjzhoiltfujezxlddfs.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_G0ym78XaN3eeOry4BlyWww_JTaq6JP9';
 
     let supabaseClient = null;
     if (window.supabase) {
@@ -14,75 +16,157 @@
         document.head.appendChild(script);
     }
 
-    // 1. 获取或首次询问玩家名字
-    function getPlayerName() {
-        let name = localStorage.getItem('player_id_name');
-        if (!name) {
-            // 如果没有名字，弹窗让用户输入
-            document.getElementById('name-modal').style.display = 'flex';
-            return null; // 暂缓游戏开始或等待输入
-        }
-        return name;
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
     }
 
-    // 绑定名字保存按钮事件
-    document.getElementById('save-name-btn').addEventListener('click', () => {
-        const inputVal = document.getElementById('player-name-input').value.trim();
-        if (inputVal) {
-            localStorage.setItem('player_id_name', inputVal);
-            document.getElementById('name-modal').style.display = 'none';
-            // 名字保存后可以继续进入游戏或刷新状态
-        } else {
-            alert('please input a player name!');
+    function getPlayerName() {
+        return localStorage.getItem('player_id_name') || '';
+    }
+
+    function showNameModal() {
+        const modal = document.getElementById('name-modal');
+        if (modal) modal.style.display = 'flex';
+        const input = document.getElementById('player-name-input');
+        if (input) input.value = getPlayerName();
+    }
+
+    function hideNameModal() {
+        const modal = document.getElementById('name-modal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    function updatePlayerChip() {
+        const name = getPlayerName() || 'GUEST';
+        const chip = document.getElementById('player-name-chip');
+        if (chip) chip.textContent = name;
+        const avatar = document.querySelector('.player-avatar');
+        if (avatar) avatar.textContent = name.charAt(0).toUpperCase();
+    }
+
+    function setRankStatus(text) {
+        const el = document.getElementById('rank-sync-status');
+        if (el) el.textContent = text;
+    }
+
+    function readLocalBoard() {
+        try {
+            const rows = JSON.parse(localStorage.getItem('local_leaderboard') || '[]');
+            return Array.isArray(rows) ? rows : [];
+        } catch (err) {
+            return [];
         }
-    });
+    }
 
-    // 2. 打开和关闭排行榜
-    document.getElementById('open-leaderboard-btn').addEventListener('click', async () => {
-        document.getElementById('leaderboard-modal').style.display = 'flex';
-        await fetchAndRenderLeaderboard();
-    });
+    function writeLocalBoard(rows) {
+        localStorage.setItem('local_leaderboard', JSON.stringify(rows.slice(-200)));
+    }
 
-    document.getElementById('close-leaderboard-btn').addEventListener('click', () => {
-        document.getElementById('leaderboard-modal').style.display = 'none';
-    });
+    function mergeBestScores(rows) {
+        const best = {};
+        rows.forEach((row) => {
+            const name = String((row && row.player_name) || 'UNKNOWN').trim() || 'UNKNOWN';
+            const score = Number(row && row.score) || 0;
+            if (!best[name] || score > Number(best[name].score || 0)) {
+                best[name] = {
+                    player_name: name,
+                    song_name: (row && row.song_name) || 'UNKNOWN',
+                    score: score
+                };
+            }
+        });
+        return Object.keys(best)
+            .map((name) => best[name])
+            .sort((a, b) => b.score - a.score || a.player_name.localeCompare(b.player_name))
+            .slice(0, 50);
+    }
 
-    // 3. 从 Supabase 拉取排行榜数据并渲染
     async function fetchAndRenderLeaderboard() {
         const listContainer = document.getElementById('leaderboard-list');
-        listContainer.innerHTML = 'loading...';
+        if (!listContainer) return;
+        listContainer.innerHTML = '<div class="empty-state">SYNCING CLOUD RANKING...</div>';
+        setRankStatus('Refreshing live ranking...');
 
         try {
-            // 假设你的 supabase 客户端叫 window.supabaseClient 或 supabase
-            const { data, error } = await supabaseClient
-                .from('leaderboard')
-                .select('player_name, song_name, score')
-                .order('score', { ascending: false })
-                .limit(10); // 取前10名
+            let remote = [];
+            if (supabaseClient) {
+                const { data, error } = await supabaseClient
+                    .from('scores')
+                    .select('player_name, song_name, score')
+                    .order('score', { ascending: false })
+                    .limit(100);
+                if (!error && data) remote = data;
+            }
 
-            if (error) throw error;
+            const data = mergeBestScores([].concat(remote || [], readLocalBoard()));
+            const me = getPlayerName();
 
             if (!data || data.length === 0) {
-                listContainer.innerHTML = '<p>no leaderboard data available!</p>';
+                listContainer.innerHTML = '<div class="empty-state">No scores yet. Clear a song to claim 1st place.</div>';
+                setRankStatus('Cloud ranking is empty');
                 return;
             }
 
-            let html = '<table style="width:100%; text-align:left;"><tr><th>rank</th><th>player</th><th>song</th><th>score</th></tr>';
-            data.forEach((row, index) => {
-                html += `<tr>
-                <td>${index + 1}</td>
-                <td>${row.player_name}</td>
-                <td>${row.song_name}</td>
-                <td>${row.score}</td>
-            </tr>`;
-            });
-            html += '</table>';
-            listContainer.innerHTML = html;
-
+            listContainer.innerHTML = data.map((row, index) => {
+                const isMe = me && row.player_name === me;
+                return `<div class="rank-row${isMe ? ' me' : ''}">
+                    <div class="rank-pos">${index + 1}</div>
+                    <div>
+                        <div class="rank-name">${escapeHtml(row.player_name || 'UNKNOWN')}${isMe ? ' · YOU' : ''}</div>
+                        <div class="rank-song">${escapeHtml(row.song_name || 'UNKNOWN')}</div>
+                    </div>
+                    <div class="rank-score">${Number(row.score || 0).toLocaleString()}</div>
+                </div>`;
+            }).join('');
+            setRankStatus('Updated just now · Top ' + data.length);
         } catch (err) {
             console.error('loading leaderboard failed:', err);
-            listContainer.innerHTML = '<p>loading leaderboard failed!</p>';
+            const data = mergeBestScores(readLocalBoard());
+            if (!data.length) {
+                listContainer.innerHTML = '<div class="empty-state">Cloud ranking unavailable. Play a song and try again.</div>';
+                setRankStatus('Sync failed');
+                return;
+            }
+            const me = getPlayerName();
+            listContainer.innerHTML = data.map((row, index) => {
+                const isMe = me && row.player_name === me;
+                return `<div class="rank-row${isMe ? ' me' : ''}">
+                    <div class="rank-pos">${index + 1}</div>
+                    <div>
+                        <div class="rank-name">${escapeHtml(row.player_name || 'UNKNOWN')}${isMe ? ' · YOU' : ''}</div>
+                        <div class="rank-song">${escapeHtml(row.song_name || 'UNKNOWN')}</div>
+                    </div>
+                    <div class="rank-score">${Number(row.score || 0).toLocaleString()}</div>
+                </div>`;
+            }).join('');
+            setRankStatus('Showing local ranking · cloud sync pending');
         }
+    }
+
+    async function uploadScoreToCloud(playerName, songName, score) {
+        const payload = {
+            player_name: playerName,
+            song_name: songName,
+            score: Number(score) || 0
+        };
+        const localRows = readLocalBoard();
+        localRows.push(payload);
+        writeLocalBoard(localRows);
+
+        if (supabaseClient) {
+            const { error } = await supabaseClient
+                .from('leaderboard')
+                .insert([payload]);
+            if (error) {
+                console.error('Supabase upload error:', error);
+                throw error;
+            }
+        }
+        return true;
     }
 
 
@@ -112,7 +196,7 @@
     ];
 
     const PHOTO_CARDS = [
-        // Hyunsuk (10 cards)[cite: 3]
+        // Hyunsuk (20 cards)
         { id: 'hyunsuk_1', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_1.jpg', rarity: 'R' },
         { id: 'hyunsuk_2', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_2.jpg', rarity: 'R' },
         { id: 'hyunsuk_3', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_3.jpg', rarity: 'SR' },
@@ -123,10 +207,18 @@
         { id: 'hyunsuk_8', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_8.jpg', rarity: 'UR' },
         { id: 'hyunsuk_9', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_9.jpg', rarity: 'UR' },
         { id: 'hyunsuk_10', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_10.jpg', rarity: 'UR' },
+        { id: 'hyunsuk_11', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_11.jpg', rarity: 'R' },
+        { id: 'hyunsuk_12', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_12.jpg', rarity: 'R' },
+        { id: 'hyunsuk_13', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_13.jpg', rarity: 'SR' },
+        { id: 'hyunsuk_14', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_14.jpg', rarity: 'SR' },
+        { id: 'hyunsuk_15', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_15.jpg', rarity: 'SSR' },
+        { id: 'hyunsuk_16', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_16.jpg', rarity: 'SSR' },
+        { id: 'hyunsuk_17', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_17.jpg', rarity: 'UR' },
+        { id: 'hyunsuk_18', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_18.jpg', rarity: 'UR' },
+        { id: 'hyunsuk_19', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_19.jpg', rarity: 'UR' },
+        { id: 'hyunsuk_20', name: 'Hyunsuk', group: 'hyunsuk', img: './photocards/hyunsuk_20.jpg', rarity: 'UR' },
 
-
-
-        // Jihoon (10 cards)[cite: 3]
+        // Jihoon (20 cards)
         { id: 'jihoon_1', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_1.jpg', rarity: 'R' },
         { id: 'jihoon_2', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_2.jpg', rarity: 'R' },
         { id: 'jihoon_3', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_3.jpg', rarity: 'SR' },
@@ -137,9 +229,18 @@
         { id: 'jihoon_8', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_8.jpg', rarity: 'UR' },
         { id: 'jihoon_9', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_9.jpg', rarity: 'UR' },
         { id: 'jihoon_10', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_10.jpg', rarity: 'UR' },
+        { id: 'jihoon_11', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_11.jpg', rarity: 'R' },
+        { id: 'jihoon_12', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_12.jpg', rarity: 'R' },
+        { id: 'jihoon_13', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_13.jpg', rarity: 'SR' },
+        { id: 'jihoon_14', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_14.jpg', rarity: 'SR' },
+        { id: 'jihoon_15', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_15.jpg', rarity: 'SSR' },
+        { id: 'jihoon_16', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_16.jpg', rarity: 'SSR' },
+        { id: 'jihoon_17', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_17.jpg', rarity: 'UR' },
+        { id: 'jihoon_18', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_18.jpg', rarity: 'UR' },
+        { id: 'jihoon_19', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_19.jpg', rarity: 'UR' },
+        { id: 'jihoon_20', name: 'Jihoon', group: 'jihoon', img: './photocards/jihoon_20.jpg', rarity: 'UR' },
 
-
-        // Yoshi (10 cards)[cite: 3]
+        // Yoshi (20 cards)
         { id: 'yoshi_1', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_1.jpg', rarity: 'R' },
         { id: 'yoshi_2', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_2.jpg', rarity: 'R' },
         { id: 'yoshi_3', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_3.jpg', rarity: 'SR' },
@@ -150,10 +251,18 @@
         { id: 'yoshi_8', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_8.jpg', rarity: 'UR' },
         { id: 'yoshi_9', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_9.jpg', rarity: 'UR' },
         { id: 'yoshi_10', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_10.jpg', rarity: 'UR' },
+        { id: 'yoshi_11', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_11.jpg', rarity: 'R' },
+        { id: 'yoshi_12', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_12.jpg', rarity: 'R' },
+        { id: 'yoshi_13', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_13.jpg', rarity: 'SR' },
+        { id: 'yoshi_14', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_14.jpg', rarity: 'SR' },
+        { id: 'yoshi_15', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_15.jpg', rarity: 'SSR' },
+        { id: 'yoshi_16', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_16.jpg', rarity: 'SSR' },
+        { id: 'yoshi_17', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_17.jpg', rarity: 'UR' },
+        { id: 'yoshi_18', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_18.jpg', rarity: 'UR' },
+        { id: 'yoshi_19', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_19.jpg', rarity: 'UR' },
+        { id: 'yoshi_20', name: 'Yoshi', group: 'yoshi', img: './photocards/yoshi_20.jpg', rarity: 'UR' },
 
-
-
-        // Junkyu (10 cards)[cite: 3]
+        // Junkyu (20 cards)
         { id: 'junkyu_1', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_1.jpg', rarity: 'R' },
         { id: 'junkyu_2', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_2.jpg', rarity: 'R' },
         { id: 'junkyu_3', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_3.jpg', rarity: 'SR' },
@@ -164,10 +273,18 @@
         { id: 'junkyu_8', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_8.jpg', rarity: 'UR' },
         { id: 'junkyu_9', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_9.jpg', rarity: 'UR' },
         { id: 'junkyu_10', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_10.jpg', rarity: 'UR' },
+        { id: 'junkyu_11', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_11.jpg', rarity: 'R' },
+        { id: 'junkyu_12', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_12.jpg', rarity: 'R' },
+        { id: 'junkyu_13', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_13.jpg', rarity: 'SR' },
+        { id: 'junkyu_14', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_14.jpg', rarity: 'SR' },
+        { id: 'junkyu_15', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_15.jpg', rarity: 'SSR' },
+        { id: 'junkyu_16', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_16.jpg', rarity: 'SSR' },
+        { id: 'junkyu_17', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_17.jpg', rarity: 'UR' },
+        { id: 'junkyu_18', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_18.jpg', rarity: 'UR' },
+        { id: 'junkyu_19', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_19.jpg', rarity: 'UR' },
+        { id: 'junkyu_20', name: 'Junkyu', group: 'junkyu', img: './photocards/junkyu_20.jpg', rarity: 'UR' },
 
-
-
-        // Jaehyuk (10 cards)[cite: 3]
+        // Jaehyuk (20 cards)
         { id: 'jaehyuk_1', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_1.jpg', rarity: 'R' },
         { id: 'jaehyuk_2', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_2.jpg', rarity: 'R' },
         { id: 'jaehyuk_3', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_3.jpg', rarity: 'SR' },
@@ -178,8 +295,18 @@
         { id: 'jaehyuk_8', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_8.jpg', rarity: 'UR' },
         { id: 'jaehyuk_9', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_9.jpg', rarity: 'UR' },
         { id: 'jaehyuk_10', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_10.jpg', rarity: 'UR' },
+        { id: 'jaehyuk_11', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_11.jpg', rarity: 'R' },
+        { id: 'jaehyuk_12', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_12.jpg', rarity: 'R' },
+        { id: 'jaehyuk_13', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_13.jpg', rarity: 'SR' },
+        { id: 'jaehyuk_14', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_14.jpg', rarity: 'SR' },
+        { id: 'jaehyuk_15', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_15.jpg', rarity: 'SSR' },
+        { id: 'jaehyuk_16', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_16.jpg', rarity: 'SSR' },
+        { id: 'jaehyuk_17', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_17.jpg', rarity: 'UR' },
+        { id: 'jaehyuk_18', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_18.jpg', rarity: 'UR' },
+        { id: 'jaehyuk_19', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_19.jpg', rarity: 'UR' },
+        { id: 'jaehyuk_20', name: 'Jaehyuk', group: 'jaehyuk', img: './photocards/jaehyuk_20.jpg', rarity: 'UR' },
 
-        // Asahi (10 cards)[cite: 3]
+        // Asahi (20 cards)
         { id: 'asahi_1', name: 'Asahi', group: 'asahi', img: './photocards/asahi_1.jpg', rarity: 'R' },
         { id: 'asahi_2', name: 'Asahi', group: 'asahi', img: './photocards/asahi_2.jpg', rarity: 'R' },
         { id: 'asahi_3', name: 'Asahi', group: 'asahi', img: './photocards/asahi_3.jpg', rarity: 'SR' },
@@ -190,9 +317,18 @@
         { id: 'asahi_8', name: 'Asahi', group: 'asahi', img: './photocards/asahi_8.jpg', rarity: 'UR' },
         { id: 'asahi_9', name: 'Asahi', group: 'asahi', img: './photocards/asahi_9.jpg', rarity: 'UR' },
         { id: 'asahi_10', name: 'Asahi', group: 'asahi', img: './photocards/asahi_10.jpg', rarity: 'UR' },
+        { id: 'asahi_11', name: 'Asahi', group: 'asahi', img: './photocards/asahi_11.jpg', rarity: 'R' },
+        { id: 'asahi_12', name: 'Asahi', group: 'asahi', img: './photocards/asahi_12.jpg', rarity: 'R' },
+        { id: 'asahi_13', name: 'Asahi', group: 'asahi', img: './photocards/asahi_13.jpg', rarity: 'SR' },
+        { id: 'asahi_14', name: 'Asahi', group: 'asahi', img: './photocards/asahi_14.jpg', rarity: 'SR' },
+        { id: 'asahi_15', name: 'Asahi', group: 'asahi', img: './photocards/asahi_15.jpg', rarity: 'SSR' },
+        { id: 'asahi_16', name: 'Asahi', group: 'asahi', img: './photocards/asahi_16.jpg', rarity: 'SSR' },
+        { id: 'asahi_17', name: 'Asahi', group: 'asahi', img: './photocards/asahi_17.jpg', rarity: 'UR' },
+        { id: 'asahi_18', name: 'Asahi', group: 'asahi', img: './photocards/asahi_18.jpg', rarity: 'UR' },
+        { id: 'asahi_19', name: 'Asahi', group: 'asahi', img: './photocards/asahi_19.jpg', rarity: 'UR' },
+        { id: 'asahi_20', name: 'Asahi', group: 'asahi', img: './photocards/asahi_20.jpg', rarity: 'UR' },
 
-
-        // Doyoung (10 cards)[cite: 3]
+        // Doyoung (20 cards)
         { id: 'doyoung_1', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_1.jpg', rarity: 'R' },
         { id: 'doyoung_2', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_2.jpg', rarity: 'R' },
         { id: 'doyoung_3', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_3.jpg', rarity: 'SR' },
@@ -203,9 +339,18 @@
         { id: 'doyoung_8', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_8.jpg', rarity: 'UR' },
         { id: 'doyoung_9', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_9.jpg', rarity: 'UR' },
         { id: 'doyoung_10', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_10.jpg', rarity: 'UR' },
+        { id: 'doyoung_11', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_11.jpg', rarity: 'R' },
+        { id: 'doyoung_12', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_12.jpg', rarity: 'R' },
+        { id: 'doyoung_13', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_13.jpg', rarity: 'SR' },
+        { id: 'doyoung_14', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_14.jpg', rarity: 'SR' },
+        { id: 'doyoung_15', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_15.jpg', rarity: 'SSR' },
+        { id: 'doyoung_16', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_16.jpg', rarity: 'SSR' },
+        { id: 'doyoung_17', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_17.jpg', rarity: 'UR' },
+        { id: 'doyoung_18', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_18.jpg', rarity: 'UR' },
+        { id: 'doyoung_19', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_19.jpg', rarity: 'UR' },
+        { id: 'doyoung_20', name: 'Doyoung', group: 'doyoung', img: './photocards/doyoung_20.jpg', rarity: 'UR' },
 
-
-        // Haruto (10 cards)[cite: 3]
+        // Haruto (20 cards)
         { id: 'haruto_1', name: 'Haruto', group: 'haruto', img: './photocards/haruto_1.jpg', rarity: 'R' },
         { id: 'haruto_2', name: 'Haruto', group: 'haruto', img: './photocards/haruto_2.jpg', rarity: 'R' },
         { id: 'haruto_3', name: 'Haruto', group: 'haruto', img: './photocards/haruto_3.jpg', rarity: 'SR' },
@@ -216,9 +361,18 @@
         { id: 'haruto_8', name: 'Haruto', group: 'haruto', img: './photocards/haruto_8.jpg', rarity: 'UR' },
         { id: 'haruto_9', name: 'Haruto', group: 'haruto', img: './photocards/haruto_9.jpg', rarity: 'UR' },
         { id: 'haruto_10', name: 'Haruto', group: 'haruto', img: './photocards/haruto_10.jpg', rarity: 'UR' },
+        { id: 'haruto_11', name: 'Haruto', group: 'haruto', img: './photocards/haruto_11.jpg', rarity: 'R' },
+        { id: 'haruto_12', name: 'Haruto', group: 'haruto', img: './photocards/haruto_12.jpg', rarity: 'R' },
+        { id: 'haruto_13', name: 'Haruto', group: 'haruto', img: './photocards/haruto_13.jpg', rarity: 'SR' },
+        { id: 'haruto_14', name: 'Haruto', group: 'haruto', img: './photocards/haruto_14.jpg', rarity: 'SR' },
+        { id: 'haruto_15', name: 'Haruto', group: 'haruto', img: './photocards/haruto_15.jpg', rarity: 'SSR' },
+        { id: 'haruto_16', name: 'Haruto', group: 'haruto', img: './photocards/haruto_16.jpg', rarity: 'SSR' },
+        { id: 'haruto_17', name: 'Haruto', group: 'haruto', img: './photocards/haruto_17.jpg', rarity: 'UR' },
+        { id: 'haruto_18', name: 'Haruto', group: 'haruto', img: './photocards/haruto_18.jpg', rarity: 'UR' },
+        { id: 'haruto_19', name: 'Haruto', group: 'haruto', img: './photocards/haruto_19.jpg', rarity: 'UR' },
+        { id: 'haruto_20', name: 'Haruto', group: 'haruto', img: './photocards/haruto_20.jpg', rarity: 'UR' },
 
-
-        // Jeongwoo (10 cards)[cite: 3]
+        // Jeongwoo (20 cards)
         { id: 'jeongwoo_1', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_1.jpg', rarity: 'R' },
         { id: 'jeongwoo_2', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_2.jpg', rarity: 'R' },
         { id: 'jeongwoo_3', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_3.jpg', rarity: 'SR' },
@@ -229,9 +383,18 @@
         { id: 'jeongwoo_8', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_8.jpg', rarity: 'UR' },
         { id: 'jeongwoo_9', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_9.jpg', rarity: 'UR' },
         { id: 'jeongwoo_10', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_10.jpg', rarity: 'UR' },
+        { id: 'jeongwoo_11', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_11.jpg', rarity: 'R' },
+        { id: 'jeongwoo_12', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_12.jpg', rarity: 'R' },
+        { id: 'jeongwoo_13', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_13.jpg', rarity: 'SR' },
+        { id: 'jeongwoo_14', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_14.jpg', rarity: 'SR' },
+        { id: 'jeongwoo_15', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_15.jpg', rarity: 'SSR' },
+        { id: 'jeongwoo_16', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_16.jpg', rarity: 'SSR' },
+        { id: 'jeongwoo_17', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_17.jpg', rarity: 'UR' },
+        { id: 'jeongwoo_18', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_18.jpg', rarity: 'UR' },
+        { id: 'jeongwoo_19', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_19.jpg', rarity: 'UR' },
+        { id: 'jeongwoo_20', name: 'Jeongwoo', group: 'jeongwoo', img: './photocards/jeongwoo_20.jpg', rarity: 'UR' },
 
-
-        // Junghwan (10 cards)[cite: 3]
+        // Junghwan (20 cards)
         { id: 'junghwan_1', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_1.jpg', rarity: 'R' },
         { id: 'junghwan_2', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_2.jpg', rarity: 'R' },
         { id: 'junghwan_3', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_3.jpg', rarity: 'SR' },
@@ -242,33 +405,58 @@
         { id: 'junghwan_8', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_8.jpg', rarity: 'UR' },
         { id: 'junghwan_9', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_9.jpg', rarity: 'UR' },
         { id: 'junghwan_10', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_10.jpg', rarity: 'UR' },
+        { id: 'junghwan_11', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_11.jpg', rarity: 'R' },
+        { id: 'junghwan_12', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_12.jpg', rarity: 'R' },
+        { id: 'junghwan_13', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_13.jpg', rarity: 'SR' },
+        { id: 'junghwan_14', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_14.jpg', rarity: 'SR' },
+        { id: 'junghwan_15', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_15.jpg', rarity: 'SSR' },
+        { id: 'junghwan_16', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_16.jpg', rarity: 'SSR' },
+        { id: 'junghwan_17', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_17.jpg', rarity: 'UR' },
+        { id: 'junghwan_18', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_18.jpg', rarity: 'UR' },
+        { id: 'junghwan_19', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_19.jpg', rarity: 'UR' },
+        { id: 'junghwan_20', name: 'Junghwan', group: 'junghwan', img: './photocards/junghwan_20.jpg', rarity: 'UR' },
 
-
-        // DUO (20 cards)[cite: 3]
-        { id: 'duo_1', name: 'DUO 1', group: 'duo', img: './photocards/duo_1.jpg', rarity: 'SR' },
-        { id: 'duo_2', name: 'DUO 2', group: 'duo', img: './photocards/duo_2.jpg', rarity: 'SR' },
-        { id: 'duo_3', name: 'DUO 3', group: 'duo', img: './photocards/duo_3.jpg', rarity: 'SR' },
-        { id: 'duo_4', name: 'DUO 4', group: 'duo', img: './photocards/duo_4.jpg', rarity: 'SR' },
-        { id: 'duo_5', name: 'DUO 5', group: 'duo', img: './photocards/duo_5.jpg', rarity: 'SR' },
-        { id: 'duo_6', name: 'DUO 6', group: 'duo', img: './photocards/duo_6.jpg', rarity: 'SSR' },
-        { id: 'duo_7', name: 'DUO 7', group: 'duo', img: './photocards/duo_7.jpg', rarity: 'SSR' },
-        { id: 'duo_8', name: 'DUO 8', group: 'duo', img: './photocards/duo_8.jpg', rarity: 'SSR' },
-        { id: 'duo_9', name: 'DUO 9', group: 'duo', img: './photocards/duo_9.jpg', rarity: 'SSR' },
-        { id: 'duo_10', name: 'DUO 10', group: 'duo', img: './photocards/duo_10.jpg', rarity: 'SSR' },
-        { id: 'duo_11', name: 'DUO 11', group: 'duo', img: './photocards/duo_11.jpg', rarity: 'SSR' },
-        { id: 'duo_12', name: 'DUO 12', group: 'duo', img: './photocards/duo_12.jpg', rarity: 'SSR' },
-        { id: 'duo_13', name: 'DUO 13', group: 'duo', img: './photocards/duo_13.jpg', rarity: 'SSR' },
-        { id: 'duo_14', name: 'DUO 14', group: 'duo', img: './photocards/duo_14.jpg', rarity: 'UR' },
-        { id: 'duo_15', name: 'DUO 15', group: 'duo', img: './photocards/duo_15.jpg', rarity: 'UR' },
-        { id: 'duo_16', name: 'DUO 16', group: 'duo', img: './photocards/duo_16.jpg', rarity: 'UR' },
-        { id: 'duo_17', name: 'DUO 17', group: 'duo', img: './photocards/duo_17.jpg', rarity: 'UR' },
-        { id: 'duo_18', name: 'DUO 18', group: 'duo', img: './photocards/duo_18.jpg', rarity: 'UR' },
-        { id: 'duo_19', name: 'DUO 19', group: 'duo', img: './photocards/duo_19.jpg', rarity: 'UR' },
-        { id: 'duo_20', name: 'DUO 20', group: 'duo', img: './photocards/duo_20.jpg', rarity: 'UR' },
-        { id: 'duo_21', name: 'DUO 21', group: 'duo', img: './photocards/duo_21.jpg', rarity: 'UR' },
-        { id: 'duo_22', name: 'DUO 22', group: 'duo', img: './photocards/duo_22.jpg', rarity: 'UR' },
-        { id: 'duo_23', name: 'DUO 23', group: 'duo', img: './photocards/duo_23.jpg', rarity: 'UR' }
-    ];
+        // UNIT Cards (40 cards)
+        { id: 'unit_1', name: 'UNIT 1', group: 'unit', img: './photocards/duo_1.jpg', rarity: 'SR' },
+        { id: 'unit_2', name: 'UNIT 2', group: 'unit', img: './photocards/duo_2.jpg', rarity: 'SR' },
+        { id: 'unit_3', name: 'UNIT 3', group: 'unit', img: './photocards/duo_3.jpg', rarity: 'SR' },
+        { id: 'unit_4', name: 'UNIT 4', group: 'unit', img: './photocards/duo_4.jpg', rarity: 'SR' },
+        { id: 'unit_5', name: 'UNIT 5', group: 'unit', img: './photocards/duo_5.jpg', rarity: 'SR' },
+        { id: 'unit_6', name: 'UNIT 6', group: 'unit', img: './photocards/duo_6.jpg', rarity: 'SSR' },
+        { id: 'unit_7', name: 'UNIT 7', group: 'unit', img: './photocards/duo_7.jpg', rarity: 'SSR' },
+        { id: 'unit_8', name: 'UNIT 8', group: 'unit', img: './photocards/duo_8.jpg', rarity: 'SSR' },
+        { id: 'unit_9', name: 'UNIT 9', group: 'unit', img: './photocards/duo_9.jpg', rarity: 'SSR' },
+        { id: 'unit_10', name: 'UNIT 10', group: 'unit', img: './photocards/duo_10.jpg', rarity: 'SSR' },
+        { id: 'unit_11', name: 'UNIT 11', group: 'unit', img: './photocards/duo_11.jpg', rarity: 'SSR' },
+        { id: 'unit_12', name: 'UNIT 12', group: 'unit', img: './photocards/duo_12.jpg', rarity: 'SSR' },
+        { id: 'unit_13', name: 'UNIT 13', group: 'unit', img: './photocards/duo_13.jpg', rarity: 'SSR' },
+        { id: 'unit_14', name: 'UNIT 14', group: 'unit', img: './photocards/duo_14.jpg', rarity: 'UR' },
+        { id: 'unit_15', name: 'UNIT 15', group: 'unit', img: './photocards/duo_15.jpg', rarity: 'UR' },
+        { id: 'unit_16', name: 'UNIT 16', group: 'unit', img: './photocards/duo_16.jpg', rarity: 'UR' },
+        { id: 'unit_17', name: 'UNIT 17', group: 'unit', img: './photocards/duo_17.jpg', rarity: 'UR' },
+        { id: 'unit_18', name: 'UNIT 18', group: 'unit', img: './photocards/duo_18.jpg', rarity: 'UR' },
+        { id: 'unit_19', name: 'UNIT 19', group: 'unit', img: './photocards/duo_19.jpg', rarity: 'UR' },
+        { id: 'unit_20', name: 'UNIT 20', group: 'unit', img: './photocards/duo_20.jpg', rarity: 'UR' },
+        { id: 'unit_21', name: 'UNIT 21', group: 'unit', img: './photocards/duo_21.jpg', rarity: 'UR' },
+        { id: 'unit_22', name: 'UNIT 22', group: 'unit', img: './photocards/duo_22.jpg', rarity: 'UR' },
+        { id: 'unit_23', name: 'UNIT 23', group: 'unit', img: './photocards/duo_23.jpg', rarity: 'UR' },
+        { id: 'unit_24', name: 'UNIT 24', group: 'unit', img: './photocards/duo_24.jpg', rarity: 'UR' },
+        { id: 'unit_25', name: 'UNIT 25', group: 'unit', img: './photocards/duo_25.jpg', rarity: 'SSR' },
+        { id: 'unit_26', name: 'UNIT 26', group: 'unit', img: './photocards/duo_26.jpg', rarity: 'SSR' },
+        { id: 'unit_27', name: 'UNIT 27', group: 'unit', img: './photocards/duo_27.jpg', rarity: 'SSR' },
+        { id: 'unit_28', name: 'UNIT 28', group: 'unit', img: './photocards/duo_28.jpg', rarity: 'UR' },
+        { id: 'unit_29', name: 'UNIT 29', group: 'unit', img: './photocards/duo_29.jpg', rarity: 'UR' },
+        { id: 'unit_30', name: 'UNIT 30', group: 'unit', img: './photocards/duo_30.jpg', rarity: 'UR' },
+        { id: 'unit_31', name: 'UNIT 31', group: 'unit', img: './photocards/duo_31.jpg', rarity: 'SR' },
+        { id: 'unit_32', name: 'UNIT 32', group: 'unit', img: './photocards/duo_32.jpg', rarity: 'SR' },
+        { id: 'unit_33', name: 'UNIT 33', group: 'unit', img: './photocards/duo_33.jpg', rarity: 'SSR' },
+        { id: 'unit_34', name: 'UNIT 34', group: 'unit', img: './photocards/duo_34.jpg', rarity: 'SSR' },
+        { id: 'unit_35', name: 'UNIT 35', group: 'unit', img: './photocards/duo_35.jpg', rarity: 'UR' },
+        { id: 'unit_36', name: 'UNIT 36', group: 'unit', img: './photocards/duo_36.jpg', rarity: 'UR' },
+        { id: 'unit_37', name: 'UNIT 37', group: 'unit', img: './photocards/duo_37.jpg', rarity: 'UR' },
+        { id: 'unit_38', name: 'UNIT 38', group: 'unit', img: './photocards/duo_38.jpg', rarity: 'UR' },
+        { id: 'unit_39', name: 'UNIT 39', group: 'unit', img: './photocards/duo_39.jpg', rarity: 'UR' },
+        { id: 'unit_40', name: 'UNIT 40', group: 'unit', img: './photocards/duo_40.jpg', rarity: 'UR' }];
 
     const CONFIG_BASE = {
         TRACK_COUNT: 4,
@@ -385,17 +573,24 @@
             this.resumeBtn = document.getElementById('resume-btn');
             this.restartInGameBtn = document.getElementById('restart-in-game-btn');
             this.homeBtn = document.getElementById('home-btn');
+            this.stageHitbox = document.getElementById('stage-hitbox');
 
             this.resizeCanvas();
             window.addEventListener('resize', () => this.resizeCanvas());
+            window.addEventListener('orientationchange', () => setTimeout(() => this.resizeCanvas(), 120));
 
             this.setupEventListeners();
             this.setupTouchControls();
             this.renderSongList();
             this.renderSongDetail();
-
+            this.setupLobbyTabs();
             this.injectCollectionUI();
             this.updateHomeGemsDisplay();
+            updatePlayerChip();
+            this.renderStorePage();
+            this.renderAlbumPage();
+            this.updateFeaturedBanner();
+            if (!getPlayerName()) showNameModal();
 
             this.loop = this.loop.bind(this);
         }
@@ -406,6 +601,77 @@
                 const currentGems = parseInt(localStorage.getItem('player_gems') || '1000', 10);
                 gemsEl.textContent = currentGems.toLocaleString();
             }
+        }
+
+        setupLobbyTabs() {
+            const tabbar = document.getElementById('bottom-tabbar');
+            if (!tabbar || tabbar.dataset.bound === '1') return;
+            tabbar.dataset.bound = '1';
+            tabbar.addEventListener('click', (e) => {
+                const btn = e.target.closest('.tab-btn');
+                if (!btn) return;
+                this.sound.playClick();
+                this.switchLobbyTab(btn.dataset.tab);
+            });
+
+            const refreshBtn = document.getElementById('refresh-leaderboard-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    this.sound.playClick();
+                    fetchAndRenderLeaderboard();
+                });
+            }
+
+            const playerChip = document.getElementById('player-chip');
+            if (playerChip) {
+                playerChip.addEventListener('click', () => {
+                    this.sound.playClick();
+                    showNameModal();
+                });
+            }
+
+            const saveNameBtn = document.getElementById('save-name-btn');
+            if (saveNameBtn && !saveNameBtn.dataset.bound) {
+                saveNameBtn.dataset.bound = '1';
+                saveNameBtn.addEventListener('click', () => {
+                    const inputVal = (document.getElementById('player-name-input').value || '').trim();
+                    if (!inputVal) {
+                        alert('please input a player name!');
+                        return;
+                    }
+                    localStorage.setItem('player_id_name', inputVal);
+                    hideNameModal();
+                    updatePlayerChip();
+                    this.sound.playClick();
+                });
+            }
+        }
+
+        switchLobbyTab(tab) {
+            const target = tab || 'songs';
+            document.querySelectorAll('.tab-btn').forEach((btn) => {
+                btn.classList.toggle('active', btn.dataset.tab === target);
+            });
+            document.querySelectorAll('.lobby-page').forEach((page) => {
+                page.classList.toggle('active', page.dataset.tab === target);
+            });
+            if (target === 'rank') fetchAndRenderLeaderboard();
+            if (target === 'store') this.renderStorePage();
+            if (target === 'album') this.renderAlbumPage();
+            if (target === 'songs') this.updateFeaturedBanner();
+        }
+
+        updateFeaturedBanner() {
+            const song = this.currentSong || SONG_LIST[0];
+            if (!song) return;
+            const art = document.getElementById('featured-art');
+            const title = document.getElementById('featured-title');
+            const artist = document.getElementById('featured-artist');
+            if (art) {
+                art.style.backgroundImage = `linear-gradient(180deg, rgba(5,6,12,0.08), rgba(5,6,12,0.78)), url('${song.detailImg || song.coverImg}')`;
+            }
+            if (title) title.textContent = song.name;
+            if (artist) artist.textContent = song.artist + '  ·  LIVE STAGE';
         }
 
         renderSongList() {
@@ -448,9 +714,10 @@
                 card.classList.toggle('active', card.dataset.songId === songId);
             });
             this.renderSongDetail();
+            this.updateFeaturedBanner();
             if (this.startBtn) {
                 this.startBtn.disabled = false;
-                this.startBtn.innerHTML = '<span class="btn-text">▶ START GAME</span>';
+                this.startBtn.innerHTML = '<span class="btn-text">START LIVE</span>';
             }
         }
 
@@ -491,17 +758,29 @@
         }
 
         resizeCanvas() {
-            this.canvas.width = window.innerWidth;
-            this.canvas.height = window.innerHeight;
-            this.width = this.canvas.width;
-            this.height = this.canvas.height;
+            const box = this.canvas.parentElement.getBoundingClientRect();
+            const cssW = Math.max(1, Math.round(box.width || window.innerWidth));
+            const cssH = Math.max(1, Math.round(box.height || window.innerHeight));
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            this.canvas.style.width = cssW + 'px';
+            this.canvas.style.height = cssH + 'px';
+            this.canvas.width = Math.round(cssW * dpr);
+            this.canvas.height = Math.round(cssH * dpr);
+            this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            this.width = cssW;
+            this.height = cssH;
 
-            const isMobile = this.width < 768;
-            // 关键：像 BabyMonster 一样，在手机端限制为 98% 宽度，PC端限制一个舒适的比例
-            this.trackAreaWidth = isMobile ? this.width * 0.98 : Math.min(this.width * 0.5, 500);
-            this.trackAreaLeft = (this.width - this.trackAreaWidth) / 2;
+            const landscape = cssW > cssH;
+            const desktop = cssW >= 900;
+            if (landscape) {
+                this.trackAreaWidth = Math.min(cssW * 0.62, desktop ? 720 : 560);
+                this.judgeLineY = cssH * 0.78;
+            } else {
+                this.trackAreaWidth = Math.min(cssW * 0.96, desktop ? 430 : cssW * 0.96);
+                this.judgeLineY = cssH * this.CONFIG.JUDGE_LINE_Y_RATIO;
+            }
+            this.trackAreaLeft = (cssW - this.trackAreaWidth) / 2;
             this.trackWidth = this.trackAreaWidth / this.CONFIG.TRACK_COUNT;
-            this.judgeLineY = this.height * this.CONFIG.JUDGE_LINE_Y_RATIO;
         }
 
         setupEventListeners() {
@@ -523,7 +802,6 @@
             this.pauseBtn.addEventListener('click', () => { this.togglePause(); });
             this.resumeBtn.addEventListener('click', () => { this.togglePause(); });
 
-            // 修复：点击游戏内重新开始按钮时，关闭暂停浮层并重新开始游戏
             this.restartInGameBtn.addEventListener('click', () => {
                 this.pauseOverlay.classList.add('hidden');
                 this.sound.playStart();
@@ -534,7 +812,6 @@
 
             const resultHomeBtn = document.getElementById('result-home-btn');
             if (resultHomeBtn) resultHomeBtn.addEventListener('click', () => { this.goHome(); });
-            // 确保音乐播完才触发结算
             this.audio.addEventListener('ended', () => {
                 this.finishGame();
             });
@@ -551,26 +828,33 @@
                 return -1;
             };
 
-            this.canvas.addEventListener('touchstart', (e) => {
+            const hitTarget = this.stageHitbox || this.canvas;
+            hitTarget.addEventListener('touchstart', (e) => {
                 e.preventDefault();
+                const rect = this.canvas.getBoundingClientRect();
                 for (let i = 0; i < e.changedTouches.length; i++) {
-                    const idx = handleTouchInput(e.changedTouches[i].clientX);
+                    const idx = handleTouchInput(e.changedTouches[i].clientX - rect.left);
                     if (idx !== -1 && !this.trackPressState[idx]) this.pressTrack(idx);
                 }
             }, { passive: false });
 
-            this.canvas.addEventListener('touchend', (e) => {
+            hitTarget.addEventListener('touchend', (e) => {
                 e.preventDefault();
                 for (let i = 0; i < 4; i++) this.releaseTrack(i);
             }, { passive: false });
 
-            this.canvas.addEventListener('mousedown', (e) => {
-                const idx = handleTouchInput(e.clientX);
+            hitTarget.addEventListener('mousedown', (e) => {
+                const rect = this.canvas.getBoundingClientRect();
+                const idx = handleTouchInput(e.clientX - rect.left);
                 if (idx !== -1 && !this.trackPressState[idx]) this.pressTrack(idx);
             });
-            this.canvas.addEventListener('mouseup', (e) => {
+            hitTarget.addEventListener('mouseup', (e) => {
                 for (let i = 0; i < 4; i++) this.releaseTrack(i);
             });
+        }
+
+        setStageLive(live) {
+            if (this.stageHitbox) this.stageHitbox.classList.toggle('active', !!live);
         }
 
         togglePause() {
@@ -598,8 +882,12 @@
             this.pauseOverlay.classList.add('hidden');
             this.endScreen.classList.add('hidden');
             this.gameUiEl.classList.add('hidden');
-            this.startScreen.style.display = 'flex';
+            this.startScreen.classList.remove('hidden');
+            this.setStageLive(false);
             this.updateHomeGemsDisplay();
+            this.switchLobbyTab('songs');
+            this.renderSongList();
+            this.updateFeaturedBanner();
         }
 
         generateNotesByMode() {
@@ -630,11 +918,16 @@
 
         startGame() {
             if (!this.currentSong) return;
+            if (!getPlayerName()) {
+                showNameModal();
+                return;
+            }
             this.loadSongMedia(this.currentSong);
-            this.startScreen.style.display = 'none';
+            this.startScreen.classList.add('hidden');
             this.endScreen.classList.add('hidden');
             this.pauseOverlay.classList.add('hidden');
             this.gameUiEl.classList.remove('hidden');
+            this.setStageLive(true);
 
             this.score = 0;
             this.combo = 0;
@@ -643,13 +936,11 @@
             this.floatingTexts = [];
             if (this.scoreEl) this.scoreEl.textContent = '0';
 
-            // 监听音频元数据加载完成，确保 duration 准确
             this.audio.onloadedmetadata = () => {
                 if (this.video.src) this.video.play().catch(() => { });
                 this.audio.currentTime = 0;
                 this.audio.play().catch(() => { });
 
-                // 根据真实的音频时长生成 notes
                 this.generateNotesByMode();
 
                 this.isPlaying = true;
@@ -660,7 +951,6 @@
                 requestAnimationFrame(this.loop);
             };
 
-            // 防止某些情况下 loadedmetadata 不触发的兜底（如本地缓存秒加载）
             if (this.audio.readyState >= 1) {
                 this.audio.onloadedmetadata();
             }
@@ -670,7 +960,6 @@
             if (!this.isPlaying || this.isPaused) return;
             this.trackPressState[trackIdx] = true;
 
-            // 修正：确保点击特效精确落在对应轨道的正中心
             const trackX = this.trackAreaLeft + trackIdx * this.trackWidth + this.trackWidth / 2;
 
             this.hitEffects.push({
@@ -703,6 +992,7 @@
                 }
             }
         }
+
         releaseTrack(trackIdx) {
             this.trackPressState[trackIdx] = false;
             for (const note of this.notes) {
@@ -758,34 +1048,31 @@
             this.updateResultScreen();
             this.triggerPostGameDrops();
 
-            // 👉 在这里加上这行，结算时自动传分数到云端
             this.submitScoreToCloud();
 
             if (this.endScreen) this.endScreen.classList.remove('hidden');
         }
 
-        // 👉 紧挨着 finishGame 下方，作为同级方法放进来
         async submitScoreToCloud() {
-            if (!supabaseClient) return;
+            const statusEl = document.getElementById('upload-status');
             const playerName = getPlayerName();
             const songName = this.currentSong ? (this.currentSong.name || this.currentSong.id) : 'Unknown Song';
             const score = this.score || 0;
-
+            if (statusEl) statusEl.textContent = 'Uploading score to cloud ranking...';
+            if (!playerName) {
+                if (statusEl) statusEl.textContent = 'Set a stage name to upload your score.';
+                showNameModal();
+                return;
+            }
             try {
-                const { error } = await supabaseClient
-                    .from('leaderboard')
-                    .insert([
-                        { player_name: playerName, song_name: songName, score: score }
-                    ]);
-                if (error) {
-                    console.error("上传排行榜失败:", error.message);
-                } else {
-                    console.log("成功同步分数到云端排行榜！");
-                }
+                await uploadScoreToCloud(playerName, songName, score);
+                if (statusEl) statusEl.textContent = 'Cloud ranking updated: ' + score.toLocaleString() + ' pts';
             } catch (err) {
-                console.error("网络异常:", err);
+                console.error('上传排行榜失败:', err);
+                if (statusEl) statusEl.textContent = 'Score saved locally. Cloud upload failed.';
             }
         }
+
         updateResultScreen() {
             const totalNotes = this.stats.perfect + this.stats.great + this.stats.good + this.stats.miss;
             const accuracy = totalNotes > 0 ? Math.round(((this.stats.perfect * 1 + this.stats.great * 0.8 + this.stats.good * 0.5) / totalNotes) * 100) : 0;
@@ -847,25 +1134,6 @@
         }
 
         injectCollectionUI() {
-            if (!window._uiDelegateBound) {
-                window._uiDelegateBound = true;
-                document.addEventListener('click', (e) => {
-                    const collectionBtn = e.target.closest('#open-collection-btn');
-                    if (collectionBtn) {
-                        this.sound.playClick();
-                        this.openCollectionModal();
-                        return;
-                    }
-
-                    const shopBtn = e.target.closest('#open-shop-btn');
-                    if (shopBtn) {
-                        this.sound.playClick();
-                        this.openShopModal();
-                        return;
-                    }
-                });
-            }
-
             const endCard = document.querySelector('.result-card') || this.endScreen;
             if (endCard && !document.getElementById('card-drop-result')) {
                 const dropDiv = document.createElement('div');
@@ -874,114 +1142,50 @@
             }
         }
 
-        openCollectionModal() {
-            let modal = document.getElementById('collection-modal');
-            if (!modal) {
-                modal = document.createElement('div');
-                modal.id = 'collection-modal';
-                modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;';
-                document.body.appendChild(modal);
-            }
-
+        renderAlbumPage() {
+            const grid = document.getElementById('album-grid');
+            const progress = document.getElementById('album-progress');
+            if (!grid) return;
             const myCards = JSON.parse(localStorage.getItem('my_photocards') || '[]');
             const currentBias = localStorage.getItem('my_bias') || '';
-
-            let cardsHtml = PHOTO_CARDS.map(card => {
+            if (progress) progress.textContent = myCards.length + ' / ' + PHOTO_CARDS.length + ' cards collected';
+            grid.innerHTML = PHOTO_CARDS.map((card) => {
                 const owned = myCards.includes(card.id);
                 const isBias = currentBias === card.id;
-                const isSSS = card.rarity === 'SSS';
-
-                return `
-                    <div style="background: rgba(255,255,255,0.05); border: 2px solid ${isBias ? '#ff00aa' : (isSSS && owned ? '#ff00ff' : (owned ? '#00e5ff' : 'rgba(255,255,255,0.1)'))}; border-radius: 10px; padding: 8px; text-align: center; width: 95px; box-sizing: border-box; position: relative; ${isSSS && owned ? 'box-shadow: 0 0 15px rgba(255,0,255,0.6); animation: pulseGlow 1.5s infinite alternate;' : ''}">
-                        ${isBias ? '<div style="position: absolute; top: 2px; right: 2px; background: #ff00aa; font-size: 8px; color: white; padding: 1px 4px; border-radius: 4px; z-index: 2;">BIAS</div>' : ''}
-                        <div style="position: relative; display: inline-block;">
-                            ${isSSS && owned ? '<div style="position: absolute; inset: -3px; border-radius: 8px; background: linear-gradient(45deg, #ff00aa, #00e5ff, #ffea00); z-index: 0; filter: blur(4px); opacity: 0.8; animation: rotateGlow 3s linear infinite;"></div>' : ''}
-                            <img src="${card.img}" style="width: 76px; height: 102px; object-fit: cover; border-radius: 6px; position: relative; z-index: 1; filter: ${owned ? 'none' : 'grayscale(100%) brightness(30%)'};" onerror="this.src='';">
-                        </div>
-                        <div style="font-size: 10px; color: white; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold;">${card.name}</div>
-                        <div style="font-size: 9px; color: ${isSSS ? '#ff00aa' : '#00e5ff'}; font-weight: bold;">[${card.rarity}]</div>
-                        ${owned ? `<button class="set-bias-btn" data-id="${card.id}" style="margin-top: 4px; font-size: 9px; background: #00e5ff; border: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-weight: bold;">${isBias ? 'BIAS' : 'Set Bias'}</button>` : '<div style="font-size: 9px; color: #888; margin-top:4px;">Locked</div>'}
-                    </div>
-                `;
+                return `<div class="album-card${owned ? '' : ' locked'}">
+                    <img src="${card.img}" alt="${escapeHtml(card.name)}" onerror="this.style.opacity='0.2'">
+                    <div class="name">${escapeHtml(card.name)}${isBias ? ' · BIAS' : ''}</div>
+                    <div class="rarity">${card.rarity}</div>
+                    ${owned ? `<button class="set-bias-btn" data-id="${card.id}">${isBias ? 'BIAS' : 'SET BIAS'}</button>` : '<div class="rarity">LOCKED</div>'}
+                </div>`;
             }).join('');
-
-            modal.innerHTML = `
-                <div style="background: #111; border: 2px solid #00e5ff; border-radius: 16px; width: 100%; max-width: 720px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 30px rgba(0,229,255,0.3);">
-                    <div style="padding: 15px 20px; background: rgba(0,229,255,0.1); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <h3 style="margin: 0; color: #00e5ff; font-size: 1.1rem;">💎 TREASURE PHOTOCOARD ALBUM (${myCards.length}/${PHOTO_CARDS.length})</h3>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <button id="modal-shop-btn" style="background: linear-gradient(135deg, #ff00aa, #ff5500); border: none; color: white; padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; box-shadow: 0 0 10px rgba(255,0,170,0.4);">🛒 Card Shop</button>
-                            <button id="close-modal-btn" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
-                        </div>
-                    </div>
-                    <div style="padding: 15px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; justify-items: center;">
-                        ${cardsHtml}
-                    </div>
-                </div>
-            `;
-
-            modal.style.display = 'flex';
-
-            modal.querySelector('#close-modal-btn').addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
-
-            modal.querySelector('#modal-shop-btn').addEventListener('click', () => {
-                this.sound.playClick();
-                this.openShopModal();
-            });
-
-            modal.querySelectorAll('.set-bias-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const cardId = e.target.dataset.id;
-                    localStorage.setItem('my_bias', cardId);
+            grid.querySelectorAll('.set-bias-btn').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    localStorage.setItem('my_bias', btn.dataset.id);
                     this.sound.playClick();
-                    this.openCollectionModal();
+                    this.renderAlbumPage();
                 });
             });
         }
 
-        openShopModal() {
-            let shopModal = document.getElementById('shop-modal');
-            if (!shopModal) {
-                shopModal = document.createElement('div');
-                shopModal.id = 'shop-modal';
-                shopModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;';
-                document.body.appendChild(shopModal);
-            }
-
-            let gems = parseInt(localStorage.getItem('player_gems') || '1000', 10);
-
-            shopModal.innerHTML = `
-                <div style="background: #111; border: 2px solid #ff00aa; border-radius: 16px; width: 100%; max-width: 480px; padding: 25px; box-sizing: border-box; text-align: center; box-shadow: 0 0 35px rgba(255,0,170,0.4);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="margin: 0; color: #ff00aa; font-size: 1.3rem;">🛒 TREASURE CARD SHOP & GACHA</h3>
-                        <button id="close-shop-btn" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
+        renderStorePage() {
+            const panel = document.getElementById('store-panel');
+            if (!panel) return;
+            const gems = parseInt(localStorage.getItem('player_gems') || '1000', 10);
+            panel.innerHTML = `
+                <div class="gacha-hero">
+                    <h3>TREASURE GACHA</h3>
+                    <p>100 diamonds per draw. Highest rarity cards can drop on any pull.</p>
+                    <div class="gems-chip" style="margin: 0 0 14px; width: fit-content;">
+                        <span class="gem-icon"></span>
+                        <span>${gems.toLocaleString()}</span>
                     </div>
-                    <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem; color: #00e5ff; font-weight: bold;">
-                        Your Diamonds: <span id="shop-gems-display">${gems}</span> 💎
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 15px;">
-                        <div style="background: rgba(255,0,170,0.1); border: 1px solid #ff00aa; border-radius: 10px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-                            <div style="text-align: left;">
-                                <div style="color: white; font-weight: bold; font-size: 1rem;">Single Gacha Draw</div>
-                                <div style="color: #aaa; font-size: 0.75rem;">Chance to get glowing SSS cards!</div>
-                            </div>
-                            <button id="buy-single-btn" style="background: linear-gradient(135deg, #ff00aa, #ff5500); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 0 10px rgba(255,0,170,0.5);">Draw (100 💎)</button>
-                        </div>
-                    </div>
-                    <div id="shop-draw-result" style="margin-top: 20px; min-height: 140px;"></div>
+                    <button id="buy-single-btn" class="btn primary" type="button">DRAW  ·  100</button>
+                    <div id="shop-draw-result" class="draw-result"></div>
                 </div>
             `;
-
-            shopModal.style.display = 'flex';
-
-            shopModal.querySelector('#close-shop-btn').addEventListener('click', () => {
-                shopModal.style.display = 'none';
-                this.updateHomeGemsDisplay();
-            });
-
-            shopModal.querySelector('#buy-single-btn').addEventListener('click', () => {
+            const buyBtn = panel.querySelector('#buy-single-btn');
+            buyBtn.addEventListener('click', () => {
                 let currentGems = parseInt(localStorage.getItem('player_gems') || '1000', 10);
                 if (currentGems < 100) {
                     alert('Not enough diamonds! Play songs to earn more!');
@@ -989,10 +1193,8 @@
                 }
                 currentGems -= 100;
                 localStorage.setItem('player_gems', currentGems.toString());
-                shopModal.querySelector('#shop-gems-display').textContent = currentGems;
                 this.updateHomeGemsDisplay();
                 this.sound.playClick();
-
                 const randomCard = PHOTO_CARDS[Math.floor(Math.random() * PHOTO_CARDS.length)];
                 let myCards = JSON.parse(localStorage.getItem('my_photocards') || '[]');
                 const isNew = !myCards.includes(randomCard.id);
@@ -1000,19 +1202,12 @@
                     myCards.push(randomCard.id);
                     localStorage.setItem('my_photocards', JSON.stringify(myCards));
                 }
-
-                const isSSS = randomCard.rarity === 'SSS';
-                const resultDiv = shopModal.querySelector('#shop-draw-result');
+                const resultDiv = panel.querySelector('#shop-draw-result');
                 resultDiv.innerHTML = `
-                    <div style="padding: 12px; background: rgba(0,0,0,0.8); border-radius: 12px; display: inline-block; border: 2px solid ${isSSS ? '#ff00aa' : '#00e5ff'}; box-shadow: 0 0 ${isSSS ? '25px #ff00aa' : '15px rgba(0,229,255,0.4)'};">
-                        <div style="font-size: 0.8rem; color: #00e5ff; font-weight: bold; margin-bottom: 6px;">🎉 GACHA SUCCESS! ${isNew ? '<span style="color:#ff00aa;">[NEW CARD!]</span>' : ''}</div>
-                        <div style="position: relative; display: inline-block;">
-                            ${isSSS ? '<div style="position: absolute; inset: -3px; border-radius: 8px; background: linear-gradient(45deg, #ff00aa, #00e5ff, #ffea00); filter: blur(5px); opacity: 0.9;"></div>' : ''}
-                            <img src="${randomCard.img}" style="width: 85px; height: 115px; object-fit: cover; border-radius: 6px; position: relative; z-index: 1;" onerror="this.src='';">
-                        </div>
-                        <div style="font-size: 0.85rem; color: white; margin-top: 6px; font-weight: bold;">${randomCard.name} <span style="color: ${isSSS ? '#ff00aa' : '#00e5ff'};">[${randomCard.rarity}]</span></div>
-                    </div>
+                    <img src="${randomCard.img}" style="width:92px;height:124px;object-fit:cover;border-radius:8px;border:1px solid rgba(232,197,107,0.5);">
+                    <div style="margin-top:8px;font-weight:800;">${escapeHtml(randomCard.name)} [${randomCard.rarity}] ${isNew ? 'NEW' : ''}</div>
                 `;
+                this.renderAlbumPage();
             });
         }
 
@@ -1131,7 +1326,6 @@
                 const trackX = this.trackAreaLeft + note.track * this.trackWidth;
                 const centerX = trackX + this.trackWidth / 2;
 
-                // 关键：采用 BabyMonster 的 0.82 比例，音符两边会自然留出空隙，绝不串轨
                 const noteW = this.trackWidth * 0.82;
                 const noteH = 16;
                 const startY = this.judgeLineY - (note.time - this.gameTime) * (this.CONFIG.NOTE_SPEED / 1000);
@@ -1261,21 +1455,4 @@
                 .catch((err) => console.log('PWA 注册失败:', err));
         }
     });
-})();// 页面加载完成后检查名字
-window.addEventListener('DOMContentLoaded', () => {
-    const savedName = localStorage.getItem('player_id_name');
-    if (!savedName) {
-        document.getElementById('name-modal').style.display = 'flex';
-    }
-});
-
-// 保存名字按钮事件
-document.getElementById('save-name-btn').addEventListener('click', () => {
-    const inputVal = document.getElementById('player-name-input').value.trim();
-    if (inputVal) {
-        localStorage.setItem('player_id_name', inputVal);
-        document.getElementById('name-modal').style.display = 'none';
-    } else {
-        alert('please input a player name!');
-    }
-});
+})();
